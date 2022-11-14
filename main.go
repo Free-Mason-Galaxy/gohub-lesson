@@ -6,8 +6,21 @@ package main
 
 import (
 	"fmt"
+
+	"github.com/gin-gonic/gin"
+	"gohub-lesson/bootstrap"
 )
 
 func main() {
-	fmt.Println("test")
+
+	// 初始化 gin
+	r := gin.Default()
+
+	// 注册路由
+	bootstrap.SetupRoute(r)
+
+	// 运行
+	if err := r.Run(":82"); err != nil {
+		fmt.Println(err)
+	}
 }
