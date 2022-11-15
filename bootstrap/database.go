@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"time"
 
+	"gohub-lesson/app/models/user"
 	"gohub-lesson/pkg/config"
 	"gohub-lesson/pkg/database"
 	"gorm.io/driver/mysql"
@@ -53,4 +54,10 @@ func SetupDB() {
 
 	database.SQLDB.SetConnMaxLifetime(time.Duration(config.GetInt("database.mysql.max_life_seconds")) * time.Second)
 
+	AutoMigrate()
+
+}
+
+func AutoMigrate() {
+	database.DB.AutoMigrate(&user.User{})
 }

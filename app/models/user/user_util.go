@@ -21,6 +21,6 @@ func IsPhoneExist(phone string) bool {
 // IsColumnExist 判断指定字段值是否存在
 func IsColumnExist(column string, value string) bool {
 	var m User
-	database.DB.Model(User{}).Select("id").Where("? = ?", column, value).First(&m)
+	database.DB.Model(User{}).Select("id").Where("? = ?", column, value).Take(&m)
 	return m.ID > 0
 }

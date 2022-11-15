@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"gohub-lesson/app/http/controllers/api/v1/auth"
 )
 
 func RegisterAPIRoutes(r *gin.Engine) {
@@ -18,5 +19,12 @@ func RegisterAPIRoutes(r *gin.Engine) {
 				"test": "hello world",
 			})
 		})
+		authGroup := v1.Group("/auth")
+		{
+			signController := new(auth.SignupController)
+			// 判断手机号是否存在
+			authGroup.GET("/signup/phone/exist", signController.IsPhoneExist)
+
+		}
 	}
 }

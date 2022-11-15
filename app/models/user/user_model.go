@@ -11,10 +11,10 @@ import (
 type User struct {
 	models.BaseModel
 
-	Name     string `json:"name,omitempty"`
-	Email    string `json:"-"`
-	Phone    string `json:"-"`
-	Password string `json:"-"`
+	Name     string `json:"name,omitempty" gorm:"type:varchar(191)"`
+	Email    string `json:"-" gorm:"type:varchar(191)"`
+	Phone    string `json:"-" gorm:"type:varchar(191)"`
+	Password string `json:"-" gorm:"type:varchar(191)"`
 
 	models.Timestamps
 }
