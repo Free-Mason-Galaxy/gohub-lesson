@@ -27,6 +27,9 @@ func main() {
 	// 初始化 gin
 	r := gin.New()
 
+	// 初始化 db
+	bootstrap.SetupDB()
+
 	// 注册路由
 	bootstrap.SetupRoute(r)
 
