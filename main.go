@@ -17,15 +17,15 @@ import (
 func main() {
 
 	// 配置初始化，依赖于 --env 参数
-	var env string
-
-	flag.StringVar(&env, "env", "", "加载 .env 文件，如 --env=testing 加载的是 .env.testing 配置文件")
-	flag.Parse()
+	env := getEnvFlag()
 
 	config.InitConfig(env)
 
 	// 初始化 gin
 	r := gin.New()
+
+	// 初始化 logger
+	bootstrap.SetupLogger()
 
 	// 初始化 db
 	bootstrap.SetupDB()
@@ -37,6 +37,12 @@ func main() {
 	if err := r.Run(config.GetDefaultAddr()); err != nil {
 		fmt.Println(err)
 	}
+}
+
+func getEnvFlag() (env string) {
+	flag.StringVar(&env, "env", "", "加载 .env 文件，如 --env=testing 加载的是 .env.testing 配置文件")
+	flag.Parse()
+	return
 }
 
 func init() {
