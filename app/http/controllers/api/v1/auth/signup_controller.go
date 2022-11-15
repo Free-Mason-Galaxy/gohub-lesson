@@ -11,6 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	v1 "gohub-lesson/app/http/controllers/api/v1"
 	"gohub-lesson/app/models/user"
+	"gohub-lesson/app/requests"
 )
 
 type SignupController struct {
@@ -18,11 +19,9 @@ type SignupController struct {
 }
 
 func (class *SignupController) IsPhoneExist(ctx *gin.Context) {
-	type PhoneExistRequest struct {
-		Phone string `json:"phone"`
-	}
+
 	var (
-		request = PhoneExistRequest{}
+		request = requests.SignupPhoneExistRequest{}
 	)
 
 	// 解析 JSON 请求
@@ -35,6 +34,14 @@ func (class *SignupController) IsPhoneExist(ctx *gin.Context) {
 		// 打印错误信息
 		fmt.Println(err.Error())
 		// 出错了，中断请求
+		return
+	}
+
+	errs := requests.ValidateSignupPhoneExistRequest(&request, ctx)
+	if len(errs) > 0 {
+		ctx.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
+			"error": errs,
+		})
 		return
 	}
 
