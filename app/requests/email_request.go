@@ -23,6 +23,7 @@ func ValidateSignupEmailExist(ctx *gin.Context) (data EmailRequest, errs MapErrs
 	rules := govalidator.MapData{
 		"email": []string{"required", "min:4", "max:30", "email"},
 	}
+
 	// 自定义错误
 	messages := govalidator.MapData{
 		"email": []string{
@@ -33,16 +34,8 @@ func ValidateSignupEmailExist(ctx *gin.Context) (data EmailRequest, errs MapErrs
 		},
 	}
 
-	// 初始化配置
-	opts := govalidator.Options{
-		Data:          &data,
-		Rules:         rules,
-		Messages:      messages,
-		TagIdentifier: "valid",
-	}
-
 	// 开始验证并转换
-	errs.Values = govalidator.New(opts).ValidateStruct()
+	errs = validate(&data, rules, messages)
 
 	return
 }

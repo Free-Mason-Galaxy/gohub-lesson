@@ -31,16 +31,8 @@ func ValidateSignupPhoneExistRequest(ctx *gin.Context) (data SignupPhoneExistReq
 		},
 	}
 
-	// 配置初始化
-	opts := govalidator.Options{
-		Data:          &data,
-		Rules:         rules,
-		TagIdentifier: "valid", // 模型中的 Struct 标签标识符
-		Messages:      messages,
-	}
-
 	// 开始验证并转换
-	errs.Values = govalidator.New(opts).ValidateStruct()
+	errs = validate(&data, rules, messages)
 
 	return
 }

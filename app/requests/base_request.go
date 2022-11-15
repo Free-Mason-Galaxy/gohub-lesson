@@ -9,6 +9,7 @@ import (
 	"net/url"
 
 	"github.com/gin-gonic/gin"
+	"github.com/thedevsaddam/govalidator"
 )
 
 type BaseRequest struct {
@@ -30,13 +31,14 @@ func (class *MapErrs) IsErrs() bool {
 }
 
 // ErrsAbortWithStatusJSON 有错误则 Abort
-func (class *MapErrs) ErrsAbortWithStatusJSON(ctx *gin.Context) {
+func (class *MapErrs) ErrsAbortWithStatusJSON(ctx *gin.Context) bool {
 	if class.IsErrs() {
 		ctx.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
 			"error": class.Values,
 		})
+		return true
 	}
-	return
+	return false
 }
 
 // ShouldBindJSON 解析数据
@@ -47,4 +49,20 @@ func ShouldBindJSON(request any, ctx *gin.Context) {
 			"error": err.Error(),
 		})
 	}
+}
+
+// validate 验证
+func validate(data any, rules, messages govalidator.MapData) (errs MapErrs) {
+
+	// 初始化配置
+	opts := govalidator.Options{
+		Data:          data,
+		Rules:         rules,
+		Messages:      messages,
+		TagIdentifier: "valid",
+	}
+
+	errs.Values = govalidator.New(opts).ValidateStruct()
+
+	return
 }

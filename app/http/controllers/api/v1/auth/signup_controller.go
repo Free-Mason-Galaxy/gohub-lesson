@@ -22,21 +22,21 @@ func (class *SignupController) IsPhoneExist(ctx *gin.Context) {
 
 	data, errs := requests.ValidateSignupPhoneExistRequest(ctx)
 
-	if errs.IsErrs() {
-		ctx.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
-			"error": errs,
-		})
+	if errs.ErrsAbortWithStatusJSON(ctx) {
 		return
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"exist": user.IsPhoneExist(data.Phone)})
 }
 
+// IsEmailExist 判断邮箱是否存在
 func (class *SignupController) IsEmailExist(ctx *gin.Context) {
 
 	data, errs := requests.ValidateSignupEmailExist(ctx)
 
-	errs.ErrsAbortWithStatusJSON(ctx)
+	if errs.ErrsAbortWithStatusJSON(ctx) {
+		return
+	}
 
 	ctx.JSON(http.StatusOK, gin.H{"exist": user.IsEmailExist(data.Email)})
 }
