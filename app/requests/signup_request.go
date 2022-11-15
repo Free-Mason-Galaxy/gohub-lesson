@@ -10,10 +10,14 @@ import (
 )
 
 type SignupPhoneExistRequest struct {
+	BaseRequest
 	Phone string `json:"phone,omitempty" valid:"phone"`
 }
 
-func ValidateSignupPhoneExistRequest(data any, ctx *gin.Context) ResponseData {
+func ValidateSignupPhoneExistRequest(ctx *gin.Context) (data SignupPhoneExistRequest, errs MapErrs) {
+
+	ShouldBindJSON(&data, ctx)
+
 	// 自定义验证规则
 	rules := govalidator.MapData{
 		"phone": []string{"required", "digits:11"},
@@ -29,13 +33,14 @@ func ValidateSignupPhoneExistRequest(data any, ctx *gin.Context) ResponseData {
 
 	// 配置初始化
 	opts := govalidator.Options{
-		Data:          data,
+		Data:          &data,
 		Rules:         rules,
 		TagIdentifier: "valid", // 模型中的 Struct 标签标识符
 		Messages:      messages,
 	}
 
-	// 开始验证
-	result := govalidator.New(opts).ValidateStruct()
-	return (ResponseData)(result)
+	// 开始验证并转换
+	errs.Values = govalidator.New(opts).ValidateStruct()
+
+	return
 }

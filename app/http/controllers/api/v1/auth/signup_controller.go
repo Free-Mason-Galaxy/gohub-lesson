@@ -5,7 +5,6 @@
 package auth
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -18,32 +17,26 @@ type SignupController struct {
 	v1.BaseController
 }
 
+// IsPhoneExist 判断手机号是否存在
 func (class *SignupController) IsPhoneExist(ctx *gin.Context) {
 
-	var (
-		request = requests.SignupPhoneExistRequest{}
-	)
+	data, errs := requests.ValidateSignupPhoneExistRequest(ctx)
 
-	// 解析 JSON 请求
-	// 解析 JSON 请求
-	if err := ctx.ShouldBindJSON(&request); err != nil {
-		// 解析失败，返回 422 状态码和错误信息
-		ctx.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
-			"error": err.Error(),
-		})
-		// 打印错误信息
-		fmt.Println(err.Error())
-		// 出错了，中断请求
-		return
-	}
-
-	errs := requests.ValidateSignupPhoneExistRequest(&request, ctx)
-	if len(errs) > 0 {
+	if errs.IsErrs() {
 		ctx.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
 			"error": errs,
 		})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"exist": user.IsPhoneExist(request.Phone)})
+	ctx.JSON(http.StatusOK, gin.H{"exist": user.IsPhoneExist(data.Phone)})
+}
+
+func (class *SignupController) IsEmailExist(ctx *gin.Context) {
+
+	data, errs := requests.ValidateSignupEmailExist(ctx)
+
+	errs.ErrsAbortWithStatusJSON(ctx)
+
+	ctx.JSON(http.StatusOK, gin.H{"exist": user.IsEmailExist(data.Email)})
 }

@@ -24,7 +24,8 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			signController := new(auth.SignupController)
 			// 判断手机号是否存在
 			authGroup.GET("/signup/phone/exist", signController.IsPhoneExist)
-
+			// 判断邮箱是否存在
+			authGroup.GET("/signup/email/exist", signController.IsEmailExist)
 		}
 	}
 }

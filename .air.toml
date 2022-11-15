@@ -51,7 +51,7 @@ runner = "green"
 
 [log]
 # 显示日志时间
-time = false
+time = true
 
 [misc]
 # 退出时删除tmp目录
