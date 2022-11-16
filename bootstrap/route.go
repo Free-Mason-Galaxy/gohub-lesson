@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"gohub-lesson/app/http/middlewares"
 	"gohub-lesson/routes"
 )
 
@@ -43,7 +44,7 @@ func setup404Handler(router *gin.Engine) {
 // registerGlobalMiddleware 注册全局中间件
 func registerGlobalMiddleware(router *gin.Engine) {
 	router.Use(
-		gin.Logger(),
+		middlewares.Logger(),
 		gin.Recovery(),
 	)
 }

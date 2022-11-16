@@ -5,20 +5,21 @@
 package routes
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"gohub-lesson/app/http/controllers/api/v1/auth"
+	"gohub-lesson/app/http/controllers/test"
 )
 
 func RegisterAPIRoutes(r *gin.Engine) {
+
+	t := r.Group("/")
+	{
+		testController := new(test.TestController)
+		t.Any("/test", testController.Any)
+	}
+
 	v1 := r.Group("/v1")
 	{
-		v1.GET("/", func(ctx *gin.Context) {
-			ctx.JSON(http.StatusOK, gin.H{
-				"test": "hello world",
-			})
-		})
 		authGroup := v1.Group("/auth")
 		{
 			signController := new(auth.SignupController)

@@ -16,7 +16,7 @@ var DB *gorm.DB
 var SQLDB *sql.DB
 
 func Connect(config gorm.Dialector, logger gormLogger.Interface) {
-	
+
 	var err error
 	// 连接数据库
 	DB, err = gorm.Open(config, &gorm.Config{
