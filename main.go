@@ -33,6 +33,9 @@ func main() {
 	// 初始化 logger
 	bootstrap.SetupLogger()
 
+	// 初始化 redis
+	bootstrap.SetupRedis()
+
 	// 初始化 db
 	bootstrap.SetupDB()
 
