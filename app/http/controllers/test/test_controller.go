@@ -11,6 +11,10 @@ import (
 type TestController struct {
 }
 
-func (class *TestController) Any(ctx *gin.Context) {
+func Test() {
+	panic("这是panic测试代码")
+}
 
+func (class *TestController) Any(ctx *gin.Context) {
+	Test()
 }
