@@ -12,10 +12,10 @@ import (
 	"gohub-lesson/app/models/user"
 	"gohub-lesson/pkg/config"
 	"gohub-lesson/pkg/database"
+	"gohub-lesson/pkg/logger"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 // SetupDB 初始化数据库
@@ -46,7 +46,7 @@ func SetupDB() {
 
 	}
 
-	database.Connect(dbConfig, logger.Default.LogMode(logger.Info))
+	database.Connect(dbConfig, logger.NewGormLogger())
 
 	database.SQLDB.SetMaxOpenConns(config.GetInt("database.mysql.max_open_connections"))
 
