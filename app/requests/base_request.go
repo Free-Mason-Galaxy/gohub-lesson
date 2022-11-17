@@ -5,11 +5,11 @@
 package requests
 
 import (
-	"net/http"
 	"net/url"
 
 	"github.com/gin-gonic/gin"
 	"github.com/thedevsaddam/govalidator"
+	"gohub-lesson/pkg/response"
 )
 
 type BaseRequest struct {
@@ -33,9 +33,7 @@ func (class *MapErrs) IsErrs() bool {
 // ErrsAbortWithStatusJSON 有错误则 Abort
 func (class *MapErrs) ErrsAbortWithStatusJSON(ctx *gin.Context) bool {
 	if class.IsErrs() {
-		ctx.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
-			"error": class.Values,
-		})
+		response.ValidationError(ctx, class.Values)
 		return true
 	}
 	return false
@@ -45,9 +43,10 @@ func (class *MapErrs) ErrsAbortWithStatusJSON(ctx *gin.Context) bool {
 // request 引用(指针)
 func ShouldBindJSON(request any, ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(request); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
-			"error": err.Error(),
-		})
+		response.BadRequest(
+			ctx,
+			err,
+			"请求解析错误，请确认请求格式是否正确。上传文件请使用 multipart 标头，参数请使用 JSON 格式。")
 	}
 }
 

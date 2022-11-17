@@ -6,6 +6,9 @@ package test
 
 import (
 	"github.com/gin-gonic/gin"
+	"gohub-lesson/pkg/captcha"
+	"gohub-lesson/pkg/logger"
+	"gohub-lesson/pkg/response"
 )
 
 type TestController struct {
@@ -16,5 +19,13 @@ func Test() {
 }
 
 func (class *TestController) Any(ctx *gin.Context) {
+	{
+		response.CJSON(ctx, 200, nil)
+		return
+	}
+	{
+		logger.Dump(captcha.NewCaptcha().VerifyCaptcha(ctx.Query("key"), ctx.Query("value")))
+		return
+	}
 	Test()
 }

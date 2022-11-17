@@ -5,12 +5,11 @@
 package auth
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	v1 "gohub-lesson/app/http/controllers/api/v1"
 	"gohub-lesson/app/models/user"
 	"gohub-lesson/app/requests"
+	"gohub-lesson/pkg/response"
 )
 
 type SignupController struct {
@@ -26,7 +25,7 @@ func (class *SignupController) IsPhoneExist(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"exist": user.IsPhoneExist(data.Phone)})
+	response.JSON(ctx, gin.H{"exist": user.IsPhoneExist(data.Phone)})
 }
 
 // IsEmailExist 判断邮箱是否存在
@@ -38,5 +37,5 @@ func (class *SignupController) IsEmailExist(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"exist": user.IsEmailExist(data.Email)})
+	response.JSON(ctx, gin.H{"exist": user.IsEmailExist(data.Email)})
 }
