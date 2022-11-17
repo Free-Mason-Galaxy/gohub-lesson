@@ -11,6 +11,7 @@ import (
 	"gohub-lesson/pkg/logger"
 	"gohub-lesson/pkg/response"
 	"gohub-lesson/pkg/sms"
+	"gohub-lesson/pkg/verifycode"
 )
 
 type TestController struct {
@@ -21,6 +22,11 @@ func Test() {
 }
 
 func (class *TestController) Any(ctx *gin.Context) {
+	{
+		isSuccess := verifycode.NewVerifyCode().SendSMS(ctx.Query("key"))
+		response.JSON(ctx, gin.H{"isSuccess": isSuccess})
+		return
+	}
 	{
 		sms.NewSMS().Send("17602118840", sms.Message{
 			Template: config.GetString("sms.aliyun.template_code"),
