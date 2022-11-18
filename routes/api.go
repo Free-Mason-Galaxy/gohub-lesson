@@ -29,6 +29,8 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			authGroup.GET("/signup/email/exist", signController.IsEmailExist)
 			// 手机号注册
 			authGroup.POST("/signup/using-phone", signController.SignupUsingPhone)
+			// 邮箱注册
+			authGroup.POST("/signup/using-email", signController.SignupUsingEmail)
 
 			sendVerifyCodeController := new(auth.SendVerifyCodeController)
 			// 获取图片验证码
