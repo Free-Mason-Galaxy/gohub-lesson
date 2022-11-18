@@ -7,6 +7,7 @@ package user
 import (
 	"gohub-lesson/app/models"
 	"gohub-lesson/pkg/database"
+	"gohub-lesson/pkg/hash"
 )
 
 type User struct {
@@ -23,4 +24,9 @@ type User struct {
 // Create 创建用户，通过 User.ID 来判断是否创建成功
 func (class *User) Create() {
 	database.DB.Create(class)
+}
+
+// ComparePassword 密码是否正确
+func (class *User) ComparePassword(pwd string) bool {
+	return hash.BcryptCheck(class.Password, pwd)
 }
