@@ -9,6 +9,7 @@ import (
 	v1 "gohub-lesson/app/http/controllers/api/v1"
 	userModel "gohub-lesson/app/models/user"
 	"gohub-lesson/app/requests"
+	"gohub-lesson/pkg/jwt"
 	baseresponse "gohub-lesson/pkg/response"
 )
 
@@ -36,8 +37,10 @@ func (class *SignupController) SignupUsingEmail(ctx *gin.Context) {
 	response := baseresponse.NewResponse(ctx)
 
 	if user.Exists() {
+		token := jwt.NewJWT().GenerateToken(user.GetIdString(), user.Name)
 		response.CreatedJSON(gin.H{
-			"data": user,
+			"token": token,
+			"data":  user,
 		})
 		return
 	}
@@ -67,8 +70,10 @@ func (class *SignupController) SignupUsingPhone(ctx *gin.Context) {
 	response := baseresponse.NewResponse(ctx)
 
 	if user.Exists() {
+		token := jwt.NewJWT().GenerateToken(user.GetIdString(), user.Name)
 		response.CreatedJSON(gin.H{
-			"data": user,
+			"token": token,
+			"data":  user,
 		})
 		return
 	}
