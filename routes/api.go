@@ -28,8 +28,11 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			// 判断邮箱是否存在
 			authGroup.GET("/signup/email/exist", signController.IsEmailExist)
 
-			verifyCodeController := new(auth.VerifyCodeController)
-			authGroup.GET("/verify-codes/captcha", verifyCodeController.ShowCaptcha)
+			sendVerifyCodeController := new(auth.SendVerifyCodeController)
+			// 图片验证码
+			authGroup.POST("/verify-codes/captcha", sendVerifyCodeController.ShowCaptcha)
+			// 手机验证码
+			authGroup.POST("/verify-codes/phone", sendVerifyCodeController.SendUsingPhone)
 		}
 	}
 }

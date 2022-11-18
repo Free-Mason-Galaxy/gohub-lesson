@@ -19,7 +19,7 @@ type SignupController struct {
 // IsPhoneExist 判断手机号是否存在
 func (class *SignupController) IsPhoneExist(ctx *gin.Context) {
 
-	data, errs := requests.ValidateSignupPhoneExistRequest(ctx)
+	data, errs := requests.ValidateSignupPhoneExist(ctx)
 
 	if errs.ErrsAbortWithStatusJSON(ctx) {
 		return

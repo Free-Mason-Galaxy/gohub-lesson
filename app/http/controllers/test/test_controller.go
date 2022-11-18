@@ -21,7 +21,30 @@ func Test() {
 	panic("这是panic测试代码")
 }
 
+type TestInterface interface {
+	Testing() string
+}
+
+type T struct {
+}
+
+func (class T) Testing() string {
+	return "testing"
+}
+
+type T2 struct {
+	T
+}
+
+func fn(t TestInterface) {
+	t.Testing()
+}
+
 func (class *TestController) Any(ctx *gin.Context) {
+	{
+		var t T2
+		fn(t)
+	}
 	{
 		isSuccess := verifycode.NewVerifyCode().SendSMS(ctx.Query("key"))
 		response.JSON(ctx, gin.H{"isSuccess": isSuccess})

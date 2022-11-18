@@ -14,7 +14,7 @@ type SignupPhoneExistRequest struct {
 	Phone string `json:"phone,omitempty" valid:"phone"`
 }
 
-func ValidateSignupPhoneExistRequest(ctx *gin.Context) (data SignupPhoneExistRequest, errs MapErrs) {
+func ValidateSignupPhoneExist(ctx *gin.Context) (data SignupPhoneExistRequest, errs MapErrs) {
 
 	ShouldBindJSON(&data, ctx)
 

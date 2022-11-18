@@ -20,6 +20,12 @@ type MapErrs struct {
 	url.Values
 }
 
+// Append 追加值
+func (class *MapErrs) Append(key, value string) {
+	// 使用 append 防止覆盖 key 旧内容
+	class.Values[key] = append(class.Values[key], value)
+}
+
 // Len 长度
 func (class *MapErrs) Len() int {
 	return len(class.Values)
@@ -50,7 +56,31 @@ func ShouldBindJSON(request any, ctx *gin.Context) {
 	}
 }
 
-// validate 验证
+// Validate 验证
+// 用于在控制器层调用
+// 如：
+//
+//	fn(){
+//		request := requests.VerifyCodePhoneRequest{}
+//		if ok := requests.Validate(c, &request, requests.VerifyCodePhone); !ok {
+//			return
+//		}
+//	}
+func Validate(ctx *gin.Context, request any, fn func(data any, ctx *gin.Context) map[string][]string) bool {
+
+	ShouldBindJSON(request, ctx)
+
+	errs := fn(request, ctx)
+
+	if len(errs) > 0 {
+		response.ValidationError(ctx, errs)
+		return false
+	}
+
+	return true
+}
+
+// validate 内部调用的验证
 func validate(data any, rules, messages govalidator.MapData) (errs MapErrs) {
 
 	// 初始化配置
