@@ -6,6 +6,7 @@ package user
 
 import (
 	"gohub-lesson/app/models"
+	"gohub-lesson/pkg/database"
 )
 
 type User struct {
@@ -17,4 +18,9 @@ type User struct {
 	Password string `json:"-" gorm:"type:varchar(191)"`
 
 	models.Timestamps
+}
+
+// Create 创建用户，通过 User.ID 来判断是否创建成功
+func (class *User) Create() {
+	database.DB.Create(class)
 }

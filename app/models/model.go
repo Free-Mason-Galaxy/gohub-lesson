@@ -13,6 +13,11 @@ type BaseModel struct {
 	ID uint64 `json:"column:id;primaryKey;autoIncrement;" json:"id,omitempty"`
 }
 
+// Exists 通过 ID 判断是否存在
+func (class *BaseModel) Exists() bool {
+	return class.ID > 0
+}
+
 // Timestamps 时间
 type Timestamps struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty" gorm:"column:created_at;index;"`
