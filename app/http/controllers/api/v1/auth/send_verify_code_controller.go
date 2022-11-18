@@ -16,6 +16,28 @@ import (
 type SendVerifyCodeController struct {
 }
 
+// SendEmail 发送邮件
+func (class *SendVerifyCodeController) SendEmail(ctx *gin.Context) {
+
+	data, errs := requests.ValidateSendVerifyCodeEmail(ctx)
+
+	if errs.ErrsAbortWithStatusJSON(ctx) {
+		return
+	}
+
+	response := baseresponse.NewResponse(ctx)
+
+	// 发送邮件
+	err := verifycode.NewVerifyCode().SendEmail(data.Email)
+
+	if err != nil {
+		response.Abort500("发送 Email 验证码失败~")
+		return
+	}
+
+	response.Success()
+}
+
 // ShowCaptcha 获取图片验证码
 func (class *SendVerifyCodeController) ShowCaptcha(ctx *gin.Context) {
 	id, b64s, err := captcha.NewCaptcha().GenerateCaptcha()

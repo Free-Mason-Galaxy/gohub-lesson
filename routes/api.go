@@ -29,10 +29,12 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			authGroup.GET("/signup/email/exist", signController.IsEmailExist)
 
 			sendVerifyCodeController := new(auth.SendVerifyCodeController)
-			// 图片验证码
+			// 获取图片验证码
 			authGroup.POST("/verify-codes/captcha", sendVerifyCodeController.ShowCaptcha)
-			// 手机验证码
+			// 发送手机验证码
 			authGroup.POST("/verify-codes/phone", sendVerifyCodeController.SendUsingPhone)
+			// 发送邮件
+			authGroup.POST("/verify-codes/email", sendVerifyCodeController.SendEmail)
 		}
 	}
 }

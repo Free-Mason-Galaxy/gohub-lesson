@@ -5,6 +5,7 @@
 package verifycode
 
 import (
+	"fmt"
 	"strings"
 	"sync"
 
@@ -12,6 +13,7 @@ import (
 	"gohub-lesson/pkg/config"
 	"gohub-lesson/pkg/helpers"
 	"gohub-lesson/pkg/logger"
+	"gohub-lesson/pkg/mail"
 	"gohub-lesson/pkg/redis"
 	"gohub-lesson/pkg/sms"
 )
@@ -38,13 +40,41 @@ func NewVerifyCode() *VerifyCode {
 	return internalVerifyCode
 }
 
+// SendEmail 发送邮件验证码
+//
+//	verifycode.NewVerifyCode().SendMail(request.Email)
+func (class *VerifyCode) SendEmail(email string) error {
+
+	code := class.generateVerifyCode(email)
+
+	// 方便本地和 API 自动测试
+	if !app.IsProduction() &&
+		strings.HasSuffix(email, config.GetString("verifycode.debug_email_suffix")) {
+		return nil
+	}
+
+	content := fmt.Sprintf("<h1>您的 Email 验证码是 %v </h1>", code)
+	// 发送邮件
+	mail.NewMailer().Send(mail.Email{
+		From: mail.From{
+			Address: config.GetString("mail.from.address"),
+			Name:    config.GetString("mail.from.name"),
+		},
+		To:      []string{email},
+		Subject: "Email 验证码",
+		HTML:    []byte(content),
+	})
+
+	return nil
+}
+
 // SendSMS 发送短信验证码，调用示例：
 //
 //	verifycode.NewVerifyCode().SendSMS(request.Phone)
-func (vc *VerifyCode) SendSMS(phone string) bool {
+func (class *VerifyCode) SendSMS(phone string) bool {
 
 	// 生成验证码
-	code := vc.generateVerifyCode(phone)
+	code := class.generateVerifyCode(phone)
 
 	// 方便本地和 API 自动测试
 	if !app.IsProduction() && strings.HasPrefix(phone, config.GetString("verifycode.debug_phone_prefix")) {
@@ -59,7 +89,7 @@ func (vc *VerifyCode) SendSMS(phone string) bool {
 }
 
 // CheckAnswer 检查用户提交的验证码是否正确，key 可以是手机号或者 Email
-func (vc *VerifyCode) CheckAnswer(key string, answer string) bool {
+func (class *VerifyCode) CheckAnswer(key string, answer string) bool {
 
 	logger.DebugJSON("验证码", "检查验证码", map[string]string{key: answer})
 
@@ -70,11 +100,11 @@ func (vc *VerifyCode) CheckAnswer(key string, answer string) bool {
 		return true
 	}
 
-	return vc.Store.Verify(key, answer, false)
+	return class.Store.Verify(key, answer, false)
 }
 
 // generateVerifyCode 生成验证码，并放置于 Redis 中
-func (vc *VerifyCode) generateVerifyCode(key string) string {
+func (class *VerifyCode) generateVerifyCode(key string) string {
 
 	// 生成随机码
 	code := helpers.RandomNumber(config.GetInt("verifycode.code_length"))
@@ -87,6 +117,6 @@ func (vc *VerifyCode) generateVerifyCode(key string) string {
 	logger.DebugJSON("验证码", "生成验证码", map[string]string{key: code})
 
 	// 将验证码及 KEY（邮箱或手机号）存放到 Redis 中并设置过期时间
-	vc.Store.Set(key, code)
+	class.Store.Set(key, code)
 	return code
 }
