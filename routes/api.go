@@ -41,40 +41,75 @@ func RegisterAPIRoutes(r *gin.Engine) {
 	}
 
 	v1 := r.Group("/v1")
+	// 全局限流中间件：每小时限流。这里是所有 API （根据 IP）请求加起来。
+	// 作为参考 Github API 每小时最多 60 个请求（根据 IP）。
+	// 测试时，可以调高一点。
+	v1.Use(middlewares.LimitIP("200-H"))
 	{
 		authGroup := v1.Group("/auth")
+		// 限流中间件：每小时限流，作为参考 Github API 每小时最多 60 个请求（根据 IP）
+		// 测试时，可以调高一点
+		authGroup.Use(middlewares.LimitIP("1000-H"))
 		{
+			// ------------------------------ 注册 ------------------------------ //
 			signController := new(auth.SignupController)
 			// 判断手机号是否存在
-			authGroup.GET("/signup/phone/exist", signController.IsPhoneExist)
+			authGroup.GET("/signup/phone/exist",
+				middlewares.GuestJWT(), signController.IsPhoneExist)
 			// 判断邮箱是否存在
-			authGroup.GET("/signup/email/exist", signController.IsEmailExist)
+			authGroup.GET("/signup/email/exist",
+				middlewares.GuestJWT(), signController.IsEmailExist)
 			// 手机号注册
-			authGroup.POST("/signup/using-phone", signController.SignupUsingPhone)
+			authGroup.POST("/signup/using-phone",
+				middlewares.GuestJWT(),
+				middlewares.LimitPerRoute("60-H"),
+				signController.SignupUsingPhone)
 			// 邮箱注册
-			authGroup.POST("/signup/using-email", signController.SignupUsingEmail)
+			authGroup.POST("/signup/using-email",
+				middlewares.GuestJWT(),
+				middlewares.LimitPerRoute("60-H"),
+				signController.SignupUsingEmail)
 
+			// ---------------------------- 发送验证码 ---------------------------- //
 			sendVerifyCodeController := new(auth.SendVerifyCodeController)
 			// 获取图片验证码
-			authGroup.POST("/verify-codes/captcha", sendVerifyCodeController.ShowCaptcha)
+			authGroup.POST("/verify-codes/captcha",
+				middlewares.LimitPerRoute("50-H"),
+				sendVerifyCodeController.ShowCaptcha)
 			// 发送手机验证码
-			authGroup.POST("/verify-codes/phone", sendVerifyCodeController.SendUsingPhone)
+			authGroup.POST("/verify-codes/phone",
+				middlewares.LimitPerRoute("20-H"),
+				sendVerifyCodeController.SendUsingPhone)
 			// 发送邮件
-			authGroup.POST("/verify-codes/email", sendVerifyCodeController.SendEmail)
+			authGroup.POST("/verify-codes/email",
+				middlewares.LimitPerRoute("20-H"),
+				sendVerifyCodeController.SendEmail)
 
+			// ------------------------------ 登录 ------------------------------ //
 			loginController := new(auth.LoginController)
 			// 手机号登录
-			authGroup.POST("/login/using-phone", loginController.LoginByPhone)
+			authGroup.POST("/login/using-phone",
+				middlewares.GuestJWT(),
+				loginController.LoginByPhone)
 			// 支持手机号，Email 和 用户名
-			authGroup.POST("/login/using-password", loginController.LoginByPassword)
+			authGroup.POST("/login/using-password",
+				middlewares.GuestJWT(),
+				loginController.LoginByPassword)
 			// 重置 token
-			authGroup.POST("/login/refresh-token", loginController.RefreshToken)
+			authGroup.POST("/login/refresh-token",
+				middlewares.AuthJWT(),
+				loginController.RefreshToken)
 
+			// ----------------------------- 重置密码 ------------------------------ //
 			pwdController := new(auth.PasswordController)
 			// 使用手机号重置密码
-			authGroup.POST("/password-reset/using-phone", pwdController.ResetByPhone)
+			authGroup.POST("/password-reset/using-phone",
+				middlewares.GuestJWT(),
+				pwdController.ResetByPhone)
 			// 使用邮箱重置密码
-			authGroup.POST("/password-reset/using-email", pwdController.ResetByEmail)
+			authGroup.POST("/password-reset/using-email",
+				middlewares.GuestJWT(),
+				pwdController.ResetByEmail)
 		}
 	}
 }
