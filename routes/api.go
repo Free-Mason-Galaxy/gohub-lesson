@@ -71,8 +71,10 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			authGroup.POST("/login/refresh-token", loginController.RefreshToken)
 
 			pwdController := new(auth.PasswordController)
-			// 重置密码
+			// 使用手机号重置密码
 			authGroup.POST("/password-reset/using-phone", pwdController.ResetByPhone)
+			// 使用邮箱重置密码
+			authGroup.POST("/password-reset/using-email", pwdController.ResetByEmail)
 		}
 	}
 }
