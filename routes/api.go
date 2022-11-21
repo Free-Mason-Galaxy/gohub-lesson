@@ -52,6 +52,10 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			loginController := new(auth.LoginController)
 			// 手机号登录
 			authGroup.POST("/login/using-phone", loginController.LoginByPhone)
+			// 支持手机号，Email 和 用户名
+			authGroup.POST("/login/using-password", loginController.LoginByPassword)
+			// 重置 token
+			authGroup.POST("/login/refresh-token", loginController.RefreshToken)
 		}
 	}
 }

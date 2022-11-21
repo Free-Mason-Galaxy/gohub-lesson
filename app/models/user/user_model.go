@@ -28,5 +28,5 @@ func (class *User) Create() {
 
 // ComparePassword 密码是否正确
 func (class *User) ComparePassword(pwd string) bool {
-	return hash.BcryptCheck(class.Password, pwd)
+	return hash.BcryptCheck(pwd, class.Password)
 }

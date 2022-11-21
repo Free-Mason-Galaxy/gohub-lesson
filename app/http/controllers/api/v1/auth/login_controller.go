@@ -45,3 +45,43 @@ func (lc *LoginController) LoginByPhone(ctx *gin.Context) {
 		"token": token,
 	})
 }
+
+// LoginByPassword 多种方法登录，支持手机号、email 和用户名
+func (lc *LoginController) LoginByPassword(ctx *gin.Context) {
+	// 1. 验证表单
+	data, errs := requests.ValidateLoginByPassword(ctx)
+
+	if errs.ErrsAbortWithStatusJSON(ctx) {
+		return
+	}
+
+	// 2. 尝试登录
+	user, err := auth.Attempt(data.LoginID, data.Password)
+
+	if helpers.IsError(err) {
+		// 失败，显示错误提示
+		response.Unauthorized(ctx, "账号不存在或密码错误")
+		return
+	}
+
+	token := jwt.NewJWT().GenerateToken(user.GetIdString(), user.Name)
+
+	response.JSON(ctx, gin.H{
+		"token": token,
+	})
+}
+
+// RefreshToken 重置 token
+func (class *LoginController) RefreshToken(ctx *gin.Context) {
+
+	token, err := jwt.NewJWT().RefreshToken(ctx)
+
+	if helpers.IsError(err) {
+		response.Error(ctx, err, "令牌刷新失败")
+		return
+	}
+
+	response.JSON(ctx, gin.H{
+		"token": token,
+	})
+}

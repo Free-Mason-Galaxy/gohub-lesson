@@ -22,7 +22,7 @@ func (class *BaseModel) Exists() bool {
 
 // NotExists 通过 ID 判断是否不存在
 func (class *BaseModel) NotExists() bool {
-	return class.ID <= 0
+	return class.ID == 0
 }
 
 // GetIdString 获取字符串ID
