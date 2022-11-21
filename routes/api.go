@@ -8,6 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"gohub-lesson/app/http/controllers/api/v1/auth"
 	"gohub-lesson/app/http/controllers/test"
+	"gohub-lesson/app/http/middlewares"
+	pkgAuth "gohub-lesson/pkg/auth"
+	"gohub-lesson/pkg/response"
 )
 
 func RegisterAPIRoutes(r *gin.Engine) {
@@ -20,6 +23,11 @@ func RegisterAPIRoutes(r *gin.Engine) {
 	// 	}
 	// 	statsviz.IndexAtRoot("/debug/statsviz").ServeHTTP(context.Writer, context.Request)
 	// })
+
+	r.GET("/test_auth", middlewares.AuthJWT(), func(ctx *gin.Context) {
+		userModel := pkgAuth.CurrentUser(ctx)
+		response.Data(ctx, userModel)
+	})
 
 	t := r.Group("/")
 	{
