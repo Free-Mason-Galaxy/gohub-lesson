@@ -17,12 +17,12 @@ import (
 )
 
 var (
-	ErrTokenExpired           error = errors.New("令牌已过期")
-	ErrTokenExpiredMaxRefresh error = errors.New("令牌已过最大刷新时间")
-	ErrTokenMalformed         error = errors.New("请求令牌格式有误")
-	ErrTokenInvalid           error = errors.New("请求令牌无效")
-	ErrHeaderEmpty            error = errors.New("需要认证才能访问！")
-	ErrHeaderMalformed        error = errors.New("请求头中 Authorization 格式有误")
+	ErrTokenExpired           = errors.New("令牌已过期")
+	ErrTokenExpiredMaxRefresh = errors.New("令牌已过最大刷新时间")
+	ErrTokenMalformed         = errors.New("请求令牌格式有误")
+	ErrTokenInvalid           = errors.New("请求令牌无效")
+	ErrHeaderEmpty            = errors.New("需要认证才能访问！")
+	ErrHeaderMalformed        = errors.New("请求头中 Authorization 格式有误")
 )
 
 // JWT 定义一个jwt对象
@@ -131,13 +131,13 @@ func (class *JWT) RefreshToken(ctx *gin.Context) (string, error) {
 }
 
 // GenerateToken 生成  Token，在登录成功时调用
-func (class *JWT) GenerateToken(userID string, userName string) (token string) {
+func (class *JWT) GenerateToken(userId string, userName string) (token string) {
 
 	// 1. 构造用户 claims 信息(负荷)
 	expireAtTime := class.expireAtTime()
 
 	claims := JWTCustomClaims{
-		userID,
+		userId,
 		userName,
 		expireAtTime,
 		golangJwt.StandardClaims{

@@ -7,7 +7,9 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net/http"
 
+	"github.com/arl/statsviz"
 	"github.com/gin-gonic/gin"
 	"gohub-lesson/bootstrap"
 	bsConfig "gohub-lesson/config"
@@ -42,10 +44,18 @@ func main() {
 	// 注册路由
 	bootstrap.SetupRoute(r)
 
+	registerStatsviz()
+
 	// 运行
 	if err := r.Run(config.GetDefaultAddr()); err != nil {
 		fmt.Println(err)
 	}
+}
+
+// registerStatsviz 实时可视化Go Runtime指标
+func registerStatsviz() {
+	statsviz.RegisterDefault()
+	go http.ListenAndServe("localhost:62", nil)
 }
 
 func getEnvFlag() (env string) {

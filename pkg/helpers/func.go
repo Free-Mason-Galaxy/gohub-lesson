@@ -12,6 +12,11 @@ import (
 	"time"
 )
 
+// IsError 是否 err
+func IsError(err error) bool {
+	return err != nil
+}
+
 // RandomNumber 生成长度为 length 随机数字字符串
 func RandomNumber(length int) string {
 

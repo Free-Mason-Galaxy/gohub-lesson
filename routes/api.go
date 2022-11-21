@@ -12,6 +12,15 @@ import (
 
 func RegisterAPIRoutes(r *gin.Engine) {
 
+	// statsviz 实时可视化Go Runtime指标
+	// r.GET("/debug/statsviz/*filepath", func(context *gin.Context) {
+	// 	if context.Param("filepath") == "/ws" {
+	// 		statsviz.Ws(context.Writer, context.Request)
+	// 		return
+	// 	}
+	// 	statsviz.IndexAtRoot("/debug/statsviz").ServeHTTP(context.Writer, context.Request)
+	// })
+
 	t := r.Group("/")
 	{
 		testController := new(test.TestController)
@@ -39,6 +48,10 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			authGroup.POST("/verify-codes/phone", sendVerifyCodeController.SendUsingPhone)
 			// 发送邮件
 			authGroup.POST("/verify-codes/email", sendVerifyCodeController.SendEmail)
+
+			loginController := new(auth.LoginController)
+			// 手机号登录
+			authGroup.POST("/login/using-phone", loginController.LoginByPhone)
 		}
 	}
 }

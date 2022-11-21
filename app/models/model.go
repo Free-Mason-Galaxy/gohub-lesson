@@ -20,6 +20,11 @@ func (class *BaseModel) Exists() bool {
 	return class.ID > 0
 }
 
+// NotExists 通过 ID 判断是否不存在
+func (class *BaseModel) NotExists() bool {
+	return class.ID <= 0
+}
+
 // GetIdString 获取字符串ID
 func (class *BaseModel) GetIdString() string {
 	return cast.ToString(class.ID)

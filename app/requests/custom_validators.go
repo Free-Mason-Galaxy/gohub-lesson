@@ -5,6 +5,8 @@
 package requests
 
 import (
+	"fmt"
+
 	"gohub-lesson/pkg/captcha"
 	"gohub-lesson/pkg/verifycode"
 )
@@ -30,8 +32,12 @@ func ValidatePasswordConfirm(password, passwordConfirm string, errs MapErrs) Map
 
 // ValidateVerifyCode 自定义规则，验证『手机/邮箱验证码』
 func ValidateVerifyCode(key, answer string, errs MapErrs) MapErrs {
-	if ok := verifycode.NewVerifyCode().CheckAnswer(key, answer); !ok {
+
+	ok := verifycode.NewVerifyCode().CheckAnswer(key, answer)
+
+	if !ok {
 		errs.Append("verify_code", "验证码错误")
 	}
+	fmt.Println("code:", ok)
 	return errs
 }
