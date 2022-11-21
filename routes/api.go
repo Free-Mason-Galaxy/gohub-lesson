@@ -9,6 +9,7 @@ import (
 	"gohub-lesson/app/http/controllers/api/v1/auth"
 	"gohub-lesson/app/http/controllers/test"
 	"gohub-lesson/app/http/middlewares"
+	pkgAuth "gohub-lesson/pkg/auth"
 	"gohub-lesson/pkg/response"
 )
 
@@ -23,7 +24,12 @@ func RegisterAPIRoutes(r *gin.Engine) {
 	// 	statsviz.IndexAtRoot("/debug/statsviz").ServeHTTP(context.Writer, context.Request)
 	// })
 
-	r.GET("/test_auth", middlewares.GuestJWT(), func(ctx *gin.Context) {
+	r.GET("/test_auth", middlewares.AuthJWT(), func(ctx *gin.Context) {
+		userModel := pkgAuth.CurrentUser(ctx)
+		response.Data(ctx, userModel)
+	})
+
+	r.GET("/test_guest", middlewares.GuestJWT(), func(ctx *gin.Context) {
 		// userModel := pkgAuth.CurrentUser(ctx)
 		response.Success(ctx)
 	})
@@ -63,6 +69,10 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			authGroup.POST("/login/using-password", loginController.LoginByPassword)
 			// 重置 token
 			authGroup.POST("/login/refresh-token", loginController.RefreshToken)
+
+			pwdController := new(auth.PasswordController)
+			// 重置密码
+			authGroup.POST("/password-reset/using-phone", pwdController.ResetByPhone)
 		}
 	}
 }

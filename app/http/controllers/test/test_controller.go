@@ -6,8 +6,10 @@ package test
 
 import (
 	"github.com/gin-gonic/gin"
+	"gohub-lesson/app/models/user"
 	"gohub-lesson/pkg/captcha"
 	"gohub-lesson/pkg/config"
+	"gohub-lesson/pkg/database"
 	"gohub-lesson/pkg/logger"
 	"gohub-lesson/pkg/response"
 	"gohub-lesson/pkg/sms"
@@ -41,6 +43,14 @@ func fn(t TestInterface) {
 }
 
 func (class *TestController) Any(ctx *gin.Context) {
+	{
+		var u user.User
+		database.DB.Where("id", ctx.Query("id")).First(&u)
+		response.JSON(ctx, gin.H{
+			"data": u,
+		})
+		return
+	}
 	{
 		var t T2
 		fn(t)

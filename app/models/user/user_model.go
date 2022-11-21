@@ -30,3 +30,8 @@ func (class *User) Create() {
 func (class *User) ComparePassword(pwd string) bool {
 	return hash.BcryptCheck(pwd, class.Password)
 }
+
+// Save 更新
+func (class *User) Save() int64 {
+	return database.DB.Save(class).RowsAffected
+}
