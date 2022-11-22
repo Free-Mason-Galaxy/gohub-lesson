@@ -9,7 +9,6 @@ import (
 	"gohub-lesson/app/models/user"
 	"gohub-lesson/pkg/captcha"
 	"gohub-lesson/pkg/config"
-	"gohub-lesson/pkg/database"
 	"gohub-lesson/pkg/logger"
 	"gohub-lesson/pkg/response"
 	"gohub-lesson/pkg/sms"
@@ -45,7 +44,11 @@ func fn(t TestInterface) {
 func (class *TestController) Any(ctx *gin.Context) {
 	{
 		var u user.User
-		database.DB.Where("id", ctx.Query("id")).First(&u)
+		u.Name = "name1"
+		u.Email = "name@qq.com"
+		u.Password = "admin"
+		u.Create()
+
 		response.JSON(ctx, gin.H{
 			"data": u,
 		})

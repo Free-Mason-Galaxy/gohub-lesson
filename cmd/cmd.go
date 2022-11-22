@@ -5,6 +5,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"gohub-lesson/pkg/helpers"
@@ -152,6 +153,7 @@ func RegisterGlobalFlags(rootCmd *cobra.Command) {
 
 // RegisterDefaultCmd 注册默认命令
 func RegisterDefaultCmd(rootCmd *cobra.Command, subCmd *cobra.Command) {
+	fmt.Println("args:", os.Args)
 	cmd, _, err := rootCmd.Find(os.Args[1:])
 	firstArg := helpers.FirstElement(os.Args[1:])
 	if err == nil && cmd.Use == rootCmd.Use && firstArg != "-h" && firstArg != "--help" {

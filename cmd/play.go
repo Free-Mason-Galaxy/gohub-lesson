@@ -28,4 +28,5 @@ func runPlay(cmd *cobra.Command, args []string) {
 	redis.Redis.Set("hello", "hi from redis", 10*time.Second)
 	// 从 redis 里取出
 	console.Success(redis.Redis.Get("hello"))
+	console.Error("测试 console 输出颜色")
 }

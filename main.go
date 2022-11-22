@@ -87,7 +87,7 @@ func NewRootCmd() *cobra.Command {
 
 		// rootCmd 的所有子命令都会执行以下代码
 		PersistentPreRun: func(command *cobra.Command, args []string) {
-			fmt.Println("test")
+			console.Error("测试 PersistentPreRun")
 			// 配置初始化，依赖命令行 --env 参数
 			config.InitConfig(cmd.Env)
 
