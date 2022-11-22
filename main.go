@@ -12,8 +12,9 @@ import (
 
 	"github.com/arl/statsviz"
 	"github.com/spf13/cobra"
+	cmd2 "gohub-lesson/app/cmd"
+	cmdMake "gohub-lesson/app/cmd/make"
 	"gohub-lesson/bootstrap"
-	"gohub-lesson/cmd"
 	bsConfig "gohub-lesson/config"
 	"gohub-lesson/pkg/config"
 	"gohub-lesson/pkg/console"
@@ -26,16 +27,17 @@ func main() {
 
 	// 注册子命令
 	rootCmd.AddCommand(
-		cmd.CmdServe,
-		cmd.CmdKey,
-		cmd.CmdPlay,
+		cmd2.CmdServe,
+		cmd2.CmdKey,
+		cmd2.CmdPlay,
+		cmdMake.CmdMake,
 	)
 
 	// 配置默认运行 Web 服务
-	cmd.RegisterDefaultCmd(rootCmd, cmd.CmdServe)
+	cmd2.RegisterDefaultCmd(rootCmd, cmd2.CmdServe)
 
 	// 注册全局参数，--env
-	cmd.RegisterGlobalFlags(rootCmd)
+	cmd2.RegisterGlobalFlags(rootCmd)
 
 	registerStatsviz()
 
@@ -89,7 +91,7 @@ func NewRootCmd() *cobra.Command {
 		PersistentPreRun: func(command *cobra.Command, args []string) {
 			console.Error("测试 PersistentPreRun")
 			// 配置初始化，依赖命令行 --env 参数
-			config.InitConfig(cmd.Env)
+			config.InitConfig(cmd2.Env)
 
 			// 初始化 Logger
 			bootstrap.SetupLogger()

@@ -1,0 +1,30 @@
+// Package {{PackageName}} 模型
+package {{PackageName}}
+
+import (
+    "gohub-lesson/app/models"
+    "gohub-lesson/pkg/database"
+)
+
+type {{StructName}} struct {
+    models.BaseModel
+
+    // 模型模板中放进去常用的方法，使用 FIXME() 这个不存在的函数，通知要记得修改这个地方
+    FIXME()
+
+    models.Timestamps
+}
+
+func ({{VariableName}} *{{StructName}}) Create() {
+    database.DB.Create(&{{VariableName}})
+}
+
+func ({{VariableName}} *{{StructName}}) Save() (rowsAffected int64) {
+    result := database.DB.Save(&{{VariableName}})
+    return result.RowsAffected
+}
+
+func ({{VariableName}} *{{StructName}}) Delete() (rowsAffected int64) {
+    result := database.DB.Delete(&{{VariableName}})
+    return result.RowsAffected
+}
