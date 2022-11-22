@@ -28,6 +28,7 @@ func main() {
 	rootCmd.AddCommand(
 		cmd.CmdServe,
 		cmd.CmdKey,
+		cmd.CmdPlay,
 	)
 
 	// 配置默认运行 Web 服务
@@ -86,7 +87,7 @@ func NewRootCmd() *cobra.Command {
 
 		// rootCmd 的所有子命令都会执行以下代码
 		PersistentPreRun: func(command *cobra.Command, args []string) {
-
+			fmt.Println("test")
 			// 配置初始化，依赖命令行 --env 参数
 			config.InitConfig(cmd.Env)
 
