@@ -58,18 +58,20 @@ func (migrator *Migrator) createMigrationsTable() {
 // Up 执行所有未迁移过的文件
 func (migrator *Migrator) Up() {
 
+	var (
+		// migrations 获取所有迁移数据
+		migrations []Migration
+		// runed 可以通过此值来判断数据库是否已是最新
+		runed = false
+	)
+
 	// 读取所有迁移文件，确保按照时间排序
 	migrateFiles := migrator.readAllMigrationFiles()
 
 	// 获取当前批次的值
 	batch := migrator.getBatch()
 
-	// 获取所有迁移数据
-	migrations := []Migration{}
 	migrator.DB.Find(&migrations)
-
-	// 可以通过此值来判断数据库是否已是最新
-	runed := false
 
 	// 对迁移文件进行遍历，如果没有执行过，就执行 up 回调
 	for _, mfile := range migrateFiles {
@@ -89,29 +91,31 @@ func (migrator *Migrator) Up() {
 // 获取当前这个批次的值
 func (migrator *Migrator) getBatch() int {
 
-	// 默认为 1
-	batch := 1
+	var (
+		// 默认为 1
+		batch = 1
+		// 取最后执行的一条迁移数据
+		lastMigration = Migration{}
+	)
 
-	// 取最后执行的一条迁移数据
-	lastMigration := Migration{}
 	migrator.DB.Last(&lastMigration)
 
 	// 如果有值的话，加一
 	if lastMigration.ID > 0 {
 		batch = lastMigration.Batch + 1
 	}
+
 	return batch
 }
 
 // 从文件目录读取文件，保证正确的时间排序
-func (migrator *Migrator) readAllMigrationFiles() []MigrationFile {
+func (migrator *Migrator) readAllMigrationFiles() (migrateFiles []MigrationFile) {
 
 	// 读取 database/migrations/ 目录下的所有文件
 	// 默认是会按照文件名称进行排序
 	files, err := os.ReadDir(migrator.Folder)
 	console.ExitIf(err)
 
-	var migrateFiles []MigrationFile
 	for _, f := range files {
 
 		// 去除文件后缀 .go
@@ -127,7 +131,7 @@ func (migrator *Migrator) readAllMigrationFiles() []MigrationFile {
 	}
 
 	// 返回排序好的『MigrationFile』数组
-	return migrateFiles
+	return
 }
 
 // 执行迁移，执行迁移的 up 方法
@@ -145,6 +149,7 @@ func (migrator *Migrator) runUpMigration(mfile MigrationFile, batch int) {
 
 	// 入库
 	err := migrator.DB.Create(&Migration{Migration: mfile.FileName, Batch: batch}).Error
+
 	console.ExitIf(err)
 }
 
@@ -152,9 +157,12 @@ func (migrator *Migrator) runUpMigration(mfile MigrationFile, batch int) {
 func (migrator *Migrator) Rollback() {
 
 	// 获取最后一批次的迁移数据
-	lastMigration := Migration{}
+	var (
+		lastMigration = Migration{}
+		migrations    []Migration
+	)
+
 	migrator.DB.Last(&lastMigration)
-	migrations := []Migration{}
 	migrator.DB.Where("batch = ?", lastMigration.Batch).Order("id DESC").Find(&migrations)
 
 	// 回滚最后一批次的迁移
@@ -189,4 +197,28 @@ func (migrator *Migrator) rollbackMigrations(migrations []Migration) bool {
 		console.Success("finish " + mfile.FileName)
 	}
 	return runed
+}
+
+// Reset 回滚所有迁移
+func (migrator *Migrator) Reset() {
+
+	var migrations []Migration
+
+	// 按照倒序读取所有迁移文件
+	migrator.DB.Order("id DESC").Find(&migrations)
+
+	// 回滚所有迁移
+	if !migrator.rollbackMigrations(migrations) {
+		console.Success("[migrations] table is empty, nothing to reset.")
+	}
+}
+
+// Refresh 回滚所有迁移，并运行所有迁移
+func (migrator *Migrator) Refresh() {
+
+	// 回滚所有迁移
+	migrator.Reset()
+
+	// 再次执行所有迁移
+	migrator.Up()
 }
