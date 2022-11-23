@@ -7,6 +7,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	CmdMigrate.AddCommand(
+		CmdMigrateUp,
+	)
+}
+
 var CmdMigrate = &cobra.Command{
 	Use:   "migrate",
 	Short: "Run database migration",
@@ -17,12 +23,6 @@ var CmdMigrateUp = &cobra.Command{
 	Use:   "up",
 	Short: "Run unmigrated migrations",
 	Run:   runUp,
-}
-
-func init() {
-	CmdMigrate.AddCommand(
-		CmdMigrateUp,
-	)
 }
 
 func migrator() *migrate.Migrator {
