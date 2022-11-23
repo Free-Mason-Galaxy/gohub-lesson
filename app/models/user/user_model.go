@@ -35,3 +35,8 @@ func (class *User) ComparePassword(pwd string) bool {
 func (class *User) Save() int64 {
 	return database.DB.Save(class).RowsAffected
 }
+
+// Delete 删除
+func (class *User) Delete() (rowsAffected int64) {
+	return database.DB.Delete(class).RowsAffected
+}

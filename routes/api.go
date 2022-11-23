@@ -6,6 +6,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
+	v1controller "gohub-lesson/app/http/controllers/api/v1"
 	"gohub-lesson/app/http/controllers/api/v1/auth"
 	"gohub-lesson/app/http/controllers/test"
 	"gohub-lesson/app/http/middlewares"
@@ -110,6 +111,11 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			authGroup.POST("/password-reset/using-email",
 				middlewares.GuestJWT(),
 				pwdController.ResetByEmail)
+
 		}
+
+		usersController := new(v1controller.UsersController)
+		// 获取当前用户
+		v1.GET("/user", middlewares.AuthJWT(), usersController.CurrentUser)
 	}
 }

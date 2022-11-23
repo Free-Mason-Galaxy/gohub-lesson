@@ -58,3 +58,9 @@ func GetByEmail(email string) (user User) {
 	database.DB.Where("email", email).First(&user)
 	return
 }
+
+// All 所有数据
+func All() (users []User) {
+	database.DB.Find(&users)
+	return
+}
