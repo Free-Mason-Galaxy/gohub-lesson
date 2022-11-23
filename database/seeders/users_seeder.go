@@ -8,9 +8,9 @@ import (
 	"fmt"
 
 	"gohub-lesson/database/factories"
-	"gohub-lesson/database/seed"
 	"gohub-lesson/pkg/console"
 	"gohub-lesson/pkg/logger"
+	"gohub-lesson/pkg/seed"
 	"gorm.io/gorm"
 )
 

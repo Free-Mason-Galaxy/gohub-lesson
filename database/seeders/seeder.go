@@ -5,7 +5,7 @@
 package seeders
 
 import (
-	"gohub-lesson/database/seed"
+	"gohub-lesson/pkg/seed"
 )
 
 // Initialize 初始化
