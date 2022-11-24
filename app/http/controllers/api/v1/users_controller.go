@@ -20,6 +20,7 @@ func (class *UsersController) CurrentUser(ctx *gin.Context) {
 }
 
 func (class *UsersController) Index(ctx *gin.Context) {
+
 	params, errs := requests.ValidatePagination(ctx)
 
 	if errs.ErrsAbortWithStatusJSON(ctx) {

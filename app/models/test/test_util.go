@@ -3,7 +3,11 @@ package test
 
 import (
     "gohub-lesson/pkg/database"
+    "gohub-lesson/pkg/paginator"
+    "gohub-lesson/pkg/app"
+
     "gorm.io/gorm/clause"
+    "github.com/gin-gonic/gin"
 )
 
 func Get(idStr string) (test Test) {
@@ -29,4 +33,15 @@ func IsExist(field, value string) bool {
         Take(&m)
 
     return m.ID > 0
+}
+
+func Paginate(c *gin.Context, perPage int) (tests []Test, paging paginator.Paging) {
+    paging = paginator.Paginate(
+        c,
+        database.DB.Model(Test{}),
+        &tests,
+        app.V1URL(database.TableName(&Test{})),
+        perPage,
+    )
+    return
 }

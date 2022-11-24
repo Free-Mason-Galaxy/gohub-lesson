@@ -7,7 +7,9 @@ package requests
 import (
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
+	"unicode/utf8"
 
 	"gohub-lesson/pkg/database"
 )
@@ -53,5 +55,44 @@ func RuleNotExists(field string, rule string, message string, value any) error {
 	}
 
 	// 验证通过
+	return nil
+}
+
+// RuleMaxCn 中文长度设定不大于
+func RuleMaxCn(field string, rule string, message string, value any) error {
+	// max_cn:8 中文长度设定不超过 8
+	valLength := utf8.RuneCountInString(value.(string))
+
+	l, _ := strconv.Atoi(strings.TrimPrefix(rule, "max_cn:"))
+
+	if valLength > l {
+		// 如果有自定义错误消息的话，使用自定义消息
+		if message != "" {
+			return errors.New(message)
+		}
+
+		return fmt.Errorf("长度不能超过 %d 个字", l)
+	}
+
+	return nil
+
+}
+
+// RuleMinCn 中文长度设定不小于
+func RuleMinCn(field string, rule string, message string, value any) error {
+	// min_cn:2 中文长度设定不小于 2
+	valLength := utf8.RuneCountInString(value.(string))
+
+	l, _ := strconv.Atoi(strings.TrimPrefix(rule, "min_cn:"))
+
+	if valLength < l {
+		// 如果有自定义错误消息的话，使用自定义消息
+		if message != "" {
+			return errors.New(message)
+		}
+
+		return fmt.Errorf("长度需大于 %d 个字", l)
+	}
+
 	return nil
 }

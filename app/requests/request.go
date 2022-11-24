@@ -16,4 +16,6 @@ func init() {
 // registerRules 注册自定义规则
 func registerRules() {
 	govalidator.AddCustomRule("not_exists", RuleNotExists)
+	govalidator.AddCustomRule("max_cn", RuleMaxCn)
+	govalidator.AddCustomRule("min_cn", RuleMinCn)
 }
