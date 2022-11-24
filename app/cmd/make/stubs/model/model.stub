@@ -19,12 +19,12 @@ func ({{VariableName}} *{{StructName}}) Create() {
     database.DB.Create(&{{VariableName}})
 }
 
-func ({{VariableName}} *{{StructName}}) Save() (rowsAffected int64) {
-    result := database.DB.Save(&{{VariableName}})
-    return result.RowsAffected
+func ({{VariableName}} *{{StructName}}) Save() (rowsAffected models.RowsAffected) {
+    rowsAffected = models.RowsAffected(database.DB.Save(&category).RowsAffected)
+    	return
 }
 
-func ({{VariableName}} *{{StructName}}) Delete() (rowsAffected int64) {
-    result := database.DB.Delete(&{{VariableName}})
-    return result.RowsAffected
+func ({{VariableName}} *{{StructName}}) Delete() (rowsAffected models.RowsAffected) {
+    rowsAffected = models.RowsAffected(database.DB.Delete(&category).RowsAffected)
+    return
 }

@@ -10,8 +10,8 @@ type CategoryRequest struct {
 	Descr string `valid:"descr" json:"descr,omitempty"`
 }
 
-// ValidateCategory 验证表单，返回长度等于零即通过
-func ValidateCategory(ctx *gin.Context) (data CategoryRequest, errs MapErrs) {
+// ValidateCategorySave 验证表单，返回长度等于零即通过
+func ValidateCategorySave(ctx *gin.Context) (data CategoryRequest, errs MapErrs) {
 
 	ShouldBindJSON(&data, ctx)
 

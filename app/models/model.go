@@ -35,3 +35,11 @@ type Timestamps struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty" gorm:"column:created_at;index;"`
 	CreatedAt time.Time `json:"created_at,omitempty" gorm:"column:updated_at;index;"`
 }
+
+type RowsAffected int64
+
+// ToBool rowsAffected 受影响行是否大于 0
+// 是否更新、删除成功
+func (class *RowsAffected) ToBool() bool {
+	return *class > 0
+}

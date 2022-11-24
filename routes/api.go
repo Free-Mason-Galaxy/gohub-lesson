@@ -122,5 +122,12 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			// 获取当前用户
 			usersGroup.GET("", usersController.Index)
 		}
+
+		categoriesController := new(v1controller.CategoriesController)
+		categoriesGroup := v1.Group("/categories")
+		{
+			categoriesGroup.POST("", middlewares.AuthJWT(), categoriesController.Store)
+			categoriesGroup.PUT("/:id", middlewares.AuthJWT(), categoriesController.Update)
+		}
 	}
 }

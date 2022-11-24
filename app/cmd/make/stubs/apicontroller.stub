@@ -20,7 +20,7 @@ func (class *{{StructNamePlural}}Controller) Index(ctx *gin.Context) {
 }
 
 func (class *{{StructNamePlural}}Controller) Show(ctx *gin.Context) {
-    {{VariableName}}Model := {{PackageName}}.Get(c.Param("id"))
+    {{VariableName}}Model := {{PackageName}}.Get(ctx.Param("id"))
 
     if {{VariableName}}Model.NotExists() {
         response.Abort404(ctx)
@@ -50,16 +50,16 @@ func (class *{{StructNamePlural}}Controller) Store(ctx *gin.Context) {
     {{VariableName}}Model.Create()
 
     if {{VariableName}}Model.NotExists() {
-        response.Created(ctx, {{VariableName}}Model)
+        response.Abort500(ctx, "创建失败，请稍后尝试~")
         return
     }
 
-    response.Abort500(ctx, "创建失败，请稍后尝试~")
+    response.Created(ctx, {{VariableName}}Model)
 }
 
 func (class *{{StructNamePlural}}Controller) Update(ctx *gin.Context) {
 
-    {{VariableName}}Model := {{PackageName}}.Get(c.Param("id"))
+    {{VariableName}}Model := {{PackageName}}.Get(ctx.Param("id"))
 
     if {{VariableName}}Model.NotExists() {
         response.Abort404(ctx)
@@ -100,7 +100,7 @@ func (class *{{StructNamePlural}}Controller) Update(ctx *gin.Context) {
 
 func (class *{{StructNamePlural}}Controller) Delete(ctx *gin.Context) {
 
-    {{VariableName}}Model := {{PackageName}}.Get(c.Param("id"))
+    {{VariableName}}Model := {{PackageName}}.Get(ctx.Param("id"))
 
     if {{VariableName}}Model.NotExists() {
         response.Abort404(ctx)
