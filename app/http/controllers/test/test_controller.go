@@ -5,6 +5,8 @@
 package test
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"gohub-lesson/app/models/user"
 	"gohub-lesson/pkg/captcha"
@@ -42,6 +44,19 @@ func fn(t TestInterface) {
 }
 
 func (class *TestController) Any(ctx *gin.Context) {
+	{
+		var a = map[string]string{
+			"k1": "v1",
+			"k2": "v2",
+		}
+		for k, v := range a {
+			fmt.Println("k_addr:", &k, k)
+			fmt.Println("v_addr:", &v, v)
+		}
+
+		return
+
+	}
 	{
 		var u user.User
 		u.Name = "name1"

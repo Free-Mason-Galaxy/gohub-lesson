@@ -5,7 +5,10 @@
 package user
 
 import (
+	"github.com/gin-gonic/gin"
+	"gohub-lesson/pkg/app"
 	"gohub-lesson/pkg/database"
+	"gohub-lesson/pkg/paginator"
 	"gorm.io/gorm/clause"
 )
 
@@ -62,5 +65,17 @@ func GetByEmail(email string) (user User) {
 // All 所有数据
 func All() (users []User) {
 	database.DB.Find(&users)
+	return
+}
+
+// Paginate 分页内容
+func Paginate(c *gin.Context, perPage int) (users []User, paging paginator.Paging) {
+	paging = paginator.Paginate(
+		c,
+		database.DB.Model(User{}),
+		&users,
+		app.V1URL(database.TableName(&User{})),
+		perPage,
+	)
 	return
 }

@@ -2,6 +2,7 @@ package v1
 
 import (
 	"gohub-lesson/app/models/user"
+	"gohub-lesson/app/requests"
 	"gohub-lesson/pkg/auth"
 	"gohub-lesson/pkg/response"
 
@@ -19,9 +20,18 @@ func (class *UsersController) CurrentUser(ctx *gin.Context) {
 }
 
 func (class *UsersController) Index(ctx *gin.Context) {
-	users := user.All()
+	params, errs := requests.ValidatePagination(ctx)
 
-	response.Data(ctx, users)
+	if errs.ErrsAbortWithStatusJSON(ctx) {
+		return
+	}
+
+	data, pager := user.Paginate(ctx, params.PerPage)
+
+	response.JSON(ctx, gin.H{
+		"data":  data,
+		"pager": pager,
+	})
 }
 
 func (class *UsersController) Show(ctx *gin.Context) {

@@ -22,6 +22,8 @@ type MapErrs struct {
 	url.Values
 }
 
+var BadRequestErrMsg = "请求解析错误，请确认请求格式是否正确。上传文件请使用 multipart 标头，参数请使用 JSON 格式。"
+
 // Append 追加值
 func (class *MapErrs) Append(key, value string) {
 	// 使用 append 防止覆盖 key 旧内容
@@ -47,14 +49,27 @@ func (class *MapErrs) ErrsAbortWithStatusJSON(ctx *gin.Context) bool {
 	return false
 }
 
+// ShouldBindQuery 解析数据
+// request 引用(指针)
+func ShouldBindQuery(request any, ctx *gin.Context) {
+	if err := ctx.ShouldBindQuery(request); err != nil {
+		response.BadRequest(ctx, err, BadRequestErrMsg)
+	}
+}
+
+// ShouldBind 解析数据
+// request 引用(指针)
+func ShouldBind(request any, ctx *gin.Context) {
+	if err := ctx.ShouldBind(request); err != nil {
+		response.BadRequest(ctx, err, BadRequestErrMsg)
+	}
+}
+
 // ShouldBindJSON 解析数据
 // request 引用(指针)
 func ShouldBindJSON(request any, ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(request); err != nil {
-		response.BadRequest(
-			ctx,
-			err,
-			"请求解析错误，请确认请求格式是否正确。上传文件请使用 multipart 标头，参数请使用 JSON 格式。")
+		response.BadRequest(ctx, err, BadRequestErrMsg)
 	}
 }
 
