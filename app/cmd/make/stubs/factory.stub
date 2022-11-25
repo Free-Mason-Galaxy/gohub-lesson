@@ -1,0 +1,24 @@
+// Package factories
+package factories
+
+import (
+	"gohub-lesson/app/models/{{PackageName}}"
+
+	"github.com/bxcodec/faker/v4"
+)
+
+func Make{{StructNamePlural}}(times int) []{{PackageName}}.{{StructName}} {
+
+	var objs []{{PackageName}}.{{StructName}}
+
+	// 设置唯一值
+	faker.SetGenerateUniqueValues(true)
+
+	for i := 0; i < times; i++ {
+		model := {{PackageName}}.{{StructName}}{
+		}
+		objs = append(objs, model)
+	}
+
+	return objs
+}

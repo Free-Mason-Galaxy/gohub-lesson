@@ -14,9 +14,19 @@ type CategoriesController struct {
 }
 
 func (class *CategoriesController) Index(ctx *gin.Context) {
-	categories := category.All()
 
-	response.Data(ctx, categories)
+	params, errs := requests.ValidatePagination(ctx)
+
+	if errs.ErrsAbortWithStatusJSON(ctx) {
+		return
+	}
+
+	categories, paging := category.Paginate(ctx, params.PerPage)
+
+	response.JSON(ctx, gin.H{
+		"data":  categories,
+		"pager": paging,
+	})
 }
 
 func (class *CategoriesController) Show(ctx *gin.Context) {
