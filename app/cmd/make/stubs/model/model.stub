@@ -20,11 +20,11 @@ func ({{VariableName}} *{{StructName}}) Create() {
 }
 
 func ({{VariableName}} *{{StructName}}) Save() (rowsAffected models.RowsAffected) {
-    rowsAffected = models.RowsAffected(database.DB.Save(&category).RowsAffected)
+    rowsAffected = models.RowsAffected(database.DB.Save({{VariableName}}).RowsAffected)
     	return
 }
 
 func ({{VariableName}} *{{StructName}}) Delete() (rowsAffected models.RowsAffected) {
-    rowsAffected = models.RowsAffected(database.DB.Delete(&category).RowsAffected)
+    rowsAffected = models.RowsAffected(database.DB.Delete({{VariableName}}).RowsAffected)
     return
 }

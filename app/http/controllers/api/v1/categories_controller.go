@@ -120,7 +120,7 @@ func (class *CategoriesController) Delete(ctx *gin.Context) {
 
 	rowsAffected := categoryModel.Delete()
 
-	if rowsAffected > 0 {
+	if rowsAffected.ToBool() {
 		response.Success(ctx)
 		return
 	}
