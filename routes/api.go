@@ -142,5 +142,12 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			topicsGroup.GET("", middlewares.AuthJWT(), topicsController.Index)
 			topicsGroup.GET("/:id", middlewares.AuthJWT(), topicsController.Show)
 		}
+
+		// 友情连接
+		linksController := new(v1controller.LinksController)
+		linksGroup := v1.Group("/links")
+		{
+			linksGroup.GET("", linksController.Index)
+		}
 	}
 }
