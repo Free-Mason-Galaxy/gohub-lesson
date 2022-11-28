@@ -105,6 +105,7 @@ func NewRootCmd() *cobra.Command {
 			bootstrap.SetupRedis()
 
 			// 初始化缓存
+			bootstrap.SetupCache()
 		},
 	}
 }
