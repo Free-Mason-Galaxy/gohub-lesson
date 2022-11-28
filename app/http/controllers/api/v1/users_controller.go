@@ -19,6 +19,26 @@ func (class *UsersController) CurrentUser(ctx *gin.Context) {
 	response.Data(ctx, users)
 }
 
+func (class *UsersController) UpdateEmail(ctx *gin.Context) {
+
+	data, errs := requests.ValidateUserUpdateEmail(ctx)
+	if errs.ErrsAbortWithStatusJSON(ctx) {
+		return
+	}
+
+	currentUser := auth.CurrentUser(ctx)
+	currentUser.Email = data.Email
+	rowsAffected := currentUser.Save()
+
+	if rowsAffected.ToBool() {
+		response.Success(ctx)
+		return
+	}
+
+	// 失败，显示错误提示
+	response.Abort500(ctx, "更新失败，请稍后尝试~")
+}
+
 func (class *UsersController) UpdateProfile(ctx *gin.Context) {
 	data, errs := requests.ValidateUserUpdateProfile(ctx)
 	if errs.ErrsAbortWithStatusJSON(ctx) {
