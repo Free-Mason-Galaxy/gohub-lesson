@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"gohub-lesson/pkg/cache"
 	"gohub-lesson/pkg/console"
 
@@ -18,9 +20,26 @@ var CmdCacheClear = &cobra.Command{
 	Run:   runCacheClear,
 }
 
+var CmdCacheForget = &cobra.Command{
+	Use:   "forget",
+	Short: "Delete redis key, example: cache forget cache-key",
+	Run:   runCacheForget,
+}
+
+// forget 命令的选项
+var cacheKey string
+
 func init() {
 	// 注册 cache 命令的子命令
-	CmdCache.AddCommand(CmdCacheClear)
+	CmdCache.AddCommand(CmdCacheClear, CmdCacheForget)
+	// 设置 cache forget 命令的选项
+	CmdCacheForget.Flags().StringVarP(&cacheKey, "key", "k", "", "KEY of the cache")
+	CmdCacheForget.MarkFlagRequired("key")
+}
+
+func runCacheForget(cmd *cobra.Command, args []string) {
+	cache.Forget(cacheKey)
+	console.Success(fmt.Sprintf("Cache key [%s] deleted.", cacheKey))
 }
 
 func runCacheClear(cmd *cobra.Command, args []string) {

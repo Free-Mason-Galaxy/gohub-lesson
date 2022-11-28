@@ -18,6 +18,10 @@ type User struct {
 	Phone    string `json:"-" gorm:"type:varchar(191)"`
 	Password string `json:"-" gorm:"type:varchar(191)"`
 
+	City         string `json:"city,omitempty"`
+	Introduction string `json:"introduction,omitempty"`
+	Avatar       string `json:"avatar,omitempty"`
+
 	models.Timestamps
 }
 
@@ -32,11 +36,11 @@ func (class *User) ComparePassword(pwd string) bool {
 }
 
 // Save 更新
-func (class *User) Save() int64 {
-	return database.DB.Save(class).RowsAffected
+func (class *User) Save() models.RowsAffected {
+	return models.RowsAffected(database.DB.Save(class).RowsAffected)
 }
 
 // Delete 删除
-func (class *User) Delete() (rowsAffected int64) {
-	return database.DB.Delete(class).RowsAffected
+func (class *User) Delete() models.RowsAffected {
+	return models.RowsAffected(database.DB.Delete(class).RowsAffected)
 }

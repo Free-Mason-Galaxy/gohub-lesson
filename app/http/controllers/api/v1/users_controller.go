@@ -19,6 +19,26 @@ func (class *UsersController) CurrentUser(ctx *gin.Context) {
 	response.Data(ctx, users)
 }
 
+func (class *UsersController) UpdateProfile(ctx *gin.Context) {
+	data, errs := requests.ValidateUserUpdateProfile(ctx)
+	if errs.ErrsAbortWithStatusJSON(ctx) {
+		return
+	}
+
+	currentUser := auth.CurrentUser(ctx)
+	currentUser.Name = data.Name
+	currentUser.City = data.City
+	currentUser.Introduction = data.Introduction
+	rowsAffected := currentUser.Save()
+
+	if rowsAffected.ToBool() {
+		response.Data(ctx, currentUser)
+		return
+	}
+
+	response.Abort500(ctx, "更新失败，请稍后尝试~")
+}
+
 func (class *UsersController) Index(ctx *gin.Context) {
 
 	params, errs := requests.ValidatePagination(ctx)

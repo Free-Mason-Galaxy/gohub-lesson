@@ -117,10 +117,13 @@ func RegisterAPIRoutes(r *gin.Engine) {
 		usersController := new(v1controller.UsersController)
 		// 获取当前用户
 		v1.GET("/user", middlewares.AuthJWT(), usersController.CurrentUser)
+
 		usersGroup := v1.Group("/users")
 		{
 			// 获取当前用户
 			usersGroup.GET("", usersController.Index)
+			// 更新当前用户
+			usersGroup.PUT("", middlewares.AuthJWT(), usersController.UpdateProfile)
 		}
 
 		// 分类
