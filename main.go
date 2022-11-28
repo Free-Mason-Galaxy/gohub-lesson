@@ -33,6 +33,7 @@ func main() {
 		cmdMake.CmdMake,
 		cmd.CmdMigrate,
 		cmd.CmdDBSeed,
+		cmd.CmdCache,
 	)
 
 	// 配置默认运行 Web 服务
@@ -47,7 +48,9 @@ func main() {
 	if err := rootCmd.Execute(); err != nil {
 		console.Exit(fmt.Sprintf("Failed to run app with %v: %s", os.Args, err.Error()))
 	}
+}
 
+func New() {
 	// 配置初始化，依赖于 --env 参数
 	// env := getEnvFlag()
 

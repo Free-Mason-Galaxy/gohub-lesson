@@ -1,121 +1,121 @@
 package v1
 
 import (
-    "gohub-lesson/app/models/link"
-    "gohub-lesson/pkg/response"
+	"gohub-lesson/app/models/link"
+	"gohub-lesson/pkg/response"
 
-    "github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"
 )
 
 type LinksController struct {
-    BaseController
+	BaseController
 }
 
 func (class *LinksController) Index(ctx *gin.Context) {
-    links := link.All()
+	links := link.AllCached()
 
-    response.Data(ctx, links)
+	response.Data(ctx, links)
 }
 
 func (class *LinksController) Show(ctx *gin.Context) {
-    linkModel := link.Get(ctx.Param("id"))
+	linkModel := link.Get(ctx.Param("id"))
 
-    if linkModel.NotExists() {
-        response.Abort404(ctx)
-        return
-    }
+	if linkModel.NotExists() {
+		response.Abort404(ctx)
+		return
+	}
 
-    response.Data(ctx, linkModel)
+	response.Data(ctx, linkModel)
 }
 
 func (class *LinksController) Store(ctx *gin.Context) {
 
-    // 例子
-    // data, errs := requests.ValidateLoginByPhone(ctx)
-    // if errs.ErrsAbortWithStatusJSON(ctx) {
-    //    return
-    // }
-    // request := requests.LinkRequest{}
-    //
-    // if ok := requests.Validate(ctx, &request, requests.LinkSave); !ok {
-    // 	return
-    // }
+	// 例子
+	// data, errs := requests.ValidateLoginByPhone(ctx)
+	// if errs.ErrsAbortWithStatusJSON(ctx) {
+	//    return
+	// }
+	// request := requests.LinkRequest{}
+	//
+	// if ok := requests.Validate(ctx, &request, requests.LinkSave); !ok {
+	// 	return
+	// }
 
-    linkModel := link.Link{
-        // FieldName:      request.FieldName,
-    }
+	linkModel := link.Link{
+		// FieldName:      request.FieldName,
+	}
 
-    linkModel.Create()
+	linkModel.Create()
 
-    if linkModel.NotExists() {
-        response.Abort500(ctx, "创建失败，请稍后尝试~")
-        return
-    }
+	if linkModel.NotExists() {
+		response.Abort500(ctx, "创建失败，请稍后尝试~")
+		return
+	}
 
-    response.Created(ctx, linkModel)
+	response.Created(ctx, linkModel)
 }
 
 func (class *LinksController) Update(ctx *gin.Context) {
 
-    linkModel := link.Get(ctx.Param("id"))
+	linkModel := link.Get(ctx.Param("id"))
 
-    if linkModel.NotExists() {
-        response.Abort404(ctx)
-        return
-    }
+	if linkModel.NotExists() {
+		response.Abort404(ctx)
+		return
+	}
 
-    // if ok := policies.CanModifyLink(ctx, linkModel); !ok {
-    // 	response.Abort403(ctx)
-    // 	return
-    // }
+	// if ok := policies.CanModifyLink(ctx, linkModel); !ok {
+	// 	response.Abort403(ctx)
+	// 	return
+	// }
 
-    // 例子
-    // data, errs := requests.ValidateLoginByPhone(ctx)
-    // if errs.ErrsAbortWithStatusJSON(ctx) {
-    //    return
-    // }
-    // request := requests.LinkRequest{}
-    // bindOk, errs := requests.Validate(ctx, &request, requests.LinkSave)
-    // if !bindOk {
-    // 	return
-    // }
-    // if len(errs) > 0 {
-    // 	response.ValidationError(ctx, errs)
-    // 	return
-    // }
-    //
-    // linkModel.FieldName = request.FieldName
+	// 例子
+	// data, errs := requests.ValidateLoginByPhone(ctx)
+	// if errs.ErrsAbortWithStatusJSON(ctx) {
+	//    return
+	// }
+	// request := requests.LinkRequest{}
+	// bindOk, errs := requests.Validate(ctx, &request, requests.LinkSave)
+	// if !bindOk {
+	// 	return
+	// }
+	// if len(errs) > 0 {
+	// 	response.ValidationError(ctx, errs)
+	// 	return
+	// }
+	//
+	// linkModel.FieldName = request.FieldName
 
-    rowsAffected := linkModel.Save()
+	rowsAffected := linkModel.Save()
 
-    if rowsAffected > 0 {
-        response.Data(ctx, linkModel)
-        return
-    }
+	if rowsAffected > 0 {
+		response.Data(ctx, linkModel)
+		return
+	}
 
-    response.Abort500(ctx, "更新失败，请稍后尝试~")
+	response.Abort500(ctx, "更新失败，请稍后尝试~")
 }
 
 func (class *LinksController) Delete(ctx *gin.Context) {
 
-    linkModel := link.Get(ctx.Param("id"))
+	linkModel := link.Get(ctx.Param("id"))
 
-    if linkModel.NotExists() {
-        response.Abort404(ctx)
-        return
-    }
+	if linkModel.NotExists() {
+		response.Abort404(ctx)
+		return
+	}
 
-    // if ok := policies.CanModifyLink(ctx, linkModel); !ok {
-    // 	response.Abort403(ctx)
-    // 	return
-    // }
+	// if ok := policies.CanModifyLink(ctx, linkModel); !ok {
+	// 	response.Abort403(ctx)
+	// 	return
+	// }
 
-    rowsAffected := linkModel.Delete()
+	rowsAffected := linkModel.Delete()
 
-    if rowsAffected > 0 {
-        response.Success(ctx)
-        return
-    }
+	if rowsAffected > 0 {
+		response.Success(ctx)
+		return
+	}
 
-    response.Abort500(ctx, "删除失败，请稍后尝试~")
+	response.Abort500(ctx, "删除失败，请稍后尝试~")
 }

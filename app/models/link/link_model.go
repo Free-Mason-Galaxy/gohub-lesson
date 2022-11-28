@@ -2,29 +2,29 @@
 package link
 
 import (
-    "gohub-lesson/app/models"
-    "gohub-lesson/pkg/database"
+	"gohub-lesson/app/models"
+	"gohub-lesson/pkg/database"
 )
 
 type Link struct {
-    models.BaseModel
+	models.BaseModel
 
-    Name string `json:"name,omitempty"`
-    URL  string `json:"url,omitempty"`
+	Name string `json:"name,omitempty"`
+	URL  string `json:"url,omitempty"`
 
-    models.Timestamps
+	models.Timestamps
 }
 
 func (link *Link) Create() {
-    database.DB.Create(&link)
+	database.DB.Create(&link)
 }
 
 func (link *Link) Save() (rowsAffected models.RowsAffected) {
-    rowsAffected = models.RowsAffected(database.DB.Save(link).RowsAffected)
-    return
+	rowsAffected = models.RowsAffected(database.DB.Save(link).RowsAffected)
+	return
 }
 
 func (link *Link) Delete() (rowsAffected models.RowsAffected) {
-    rowsAffected = models.RowsAffected(database.DB.Delete(link).RowsAffected)
-    return
+	rowsAffected = models.RowsAffected(database.DB.Delete(link).RowsAffected)
+	return
 }
