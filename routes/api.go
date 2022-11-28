@@ -137,6 +137,7 @@ func RegisterAPIRoutes(r *gin.Engine) {
 		topicsGroup := v1.Group("/topics")
 		{
 			topicsGroup.POST("", middlewares.AuthJWT(), topicsController.Store)
+			topicsGroup.PUT("/:id", middlewares.AuthJWT(), topicsController.Update)
 		}
 	}
 }

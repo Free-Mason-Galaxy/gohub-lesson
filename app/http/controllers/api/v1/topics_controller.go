@@ -77,17 +77,10 @@ func (class *TopicsController) Update(ctx *gin.Context) {
 	if errs.ErrsAbortWithStatusJSON(ctx) {
 		return
 	}
-	// request := requests.TopicRequest{}
-	// bindOk, errs := requests.Validate(ctx, &request, requests.TopicSave)
-	// if !bindOk {
-	//     return
-	// }
-	// if len(errs) > 0 {
-	//     response.ValidationError(ctx, errs)
-	//     return
-	// }
 
 	topicModel.Title = data.Title
+	topicModel.Body = data.Body
+	topicModel.CategoryID = data.CategoryID
 
 	rowsAffected := topicModel.Save()
 
