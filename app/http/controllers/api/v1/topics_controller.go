@@ -2,6 +2,7 @@ package v1
 
 import (
 	"gohub-lesson/app/models/topic"
+	"gohub-lesson/app/policies"
 	"gohub-lesson/app/requests"
 	"gohub-lesson/pkg/auth"
 	"gohub-lesson/pkg/response"
@@ -14,9 +15,18 @@ type TopicsController struct {
 }
 
 func (class *TopicsController) Index(ctx *gin.Context) {
-	topics := topic.All()
 
-	response.Data(ctx, topics)
+	data, errs := requests.ValidatePagination(ctx)
+	if errs.ErrsAbortWithStatusJSON(ctx) {
+		return
+	}
+
+	topics, paging := topic.Paginate(ctx, data.PerPage)
+
+	response.JSON(ctx, gin.H{
+		"data":  topics,
+		"pager": paging,
+	})
 }
 
 func (class *TopicsController) Show(ctx *gin.Context) {
@@ -68,10 +78,10 @@ func (class *TopicsController) Update(ctx *gin.Context) {
 		return
 	}
 
-	// if ok := policies.CanModifyTopic(ctx, topicModel); !ok {
-	//     response.Abort403(ctx)
-	//     return
-	// }
+	if !policies.CanModifyTopic(ctx, topicModel) {
+		response.Abort403(ctx)
+		return
+	}
 
 	data, errs := requests.ValidateTopicSave(ctx)
 	if errs.ErrsAbortWithStatusJSON(ctx) {
@@ -101,10 +111,10 @@ func (class *TopicsController) Delete(ctx *gin.Context) {
 		return
 	}
 
-	// if ok := policies.CanModifyTopic(ctx, topicModel); !ok {
-	//     response.Abort403(ctx)
-	//     return
-	// }
+	if !policies.CanModifyTopic(ctx, topicModel) {
+		response.Abort403(ctx)
+		return
+	}
 
 	rowsAffected := topicModel.Delete()
 
