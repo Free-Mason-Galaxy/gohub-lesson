@@ -5,6 +5,8 @@
 package routes
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	v1controller "gohub-lesson/app/http/controllers/api/v1"
 	"gohub-lesson/app/http/controllers/api/v1/auth"
@@ -16,14 +18,11 @@ import (
 
 func RegisterAPIRoutes(r *gin.Engine) {
 
-	// statsviz 实时可视化Go Runtime指标
-	// r.GET("/debug/statsviz/*filepath", func(context *gin.Context) {
-	// 	if context.Param("filepath") == "/ws" {
-	// 		statsviz.Ws(context.Writer, context.Request)
-	// 		return
-	// 	}
-	// 	statsviz.IndexAtRoot("/debug/statsviz").ServeHTTP(context.Writer, context.Request)
-	// })
+	// 静态图片访问
+	r.StaticFS("public/uploads", http.Dir("./public/uploads"))
+	// r.Static("/assets", "./assets")
+	// r.StaticFS("/more_static", http.Dir("my_file_system"))
+	// r.StaticFile("/favicon.ico", "./resources/favicon.ico")
 
 	r.GET("/test_auth", middlewares.AuthJWT(), func(ctx *gin.Context) {
 		userModel := pkgAuth.CurrentUser(ctx)

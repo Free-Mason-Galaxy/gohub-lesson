@@ -35,7 +35,7 @@ func (class *UsersController) UpdateAvatar(ctx *gin.Context) {
 	}
 
 	currentUser := auth.CurrentUser(ctx)
-	currentUser.Avatar = config.GetString("app.url") + avatar
+	currentUser.Avatar = config.GetString("app.url") + "/" + avatar
 	currentUser.Save()
 
 	response.Data(ctx, currentUser)
