@@ -18,4 +18,5 @@ func registerRules() {
 	govalidator.AddCustomRule("not_exists", RuleNotExists)
 	govalidator.AddCustomRule("max_cn", RuleMaxCn)
 	govalidator.AddCustomRule("min_cn", RuleMinCn)
+	govalidator.AddCustomRule("exists", RuleExists)
 }

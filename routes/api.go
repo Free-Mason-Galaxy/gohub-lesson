@@ -123,12 +123,20 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			usersGroup.GET("", usersController.Index)
 		}
 
+		// 分类
 		categoriesController := new(v1controller.CategoriesController)
 		categoriesGroup := v1.Group("/categories")
 		{
 			categoriesGroup.GET("", categoriesController.Index)
 			categoriesGroup.POST("", middlewares.AuthJWT(), categoriesController.Store)
 			categoriesGroup.PUT("/:id", middlewares.AuthJWT(), categoriesController.Update)
+		}
+
+		// 话题
+		topicsController := new(v1controller.TopicsController)
+		topicsGroup := v1.Group("/topics")
+		{
+			topicsGroup.POST("", middlewares.AuthJWT(), topicsController.Store)
 		}
 	}
 }
