@@ -125,6 +125,8 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			// 更新当前用户
 			usersGroup.PUT("", middlewares.AuthJWT(), usersController.UpdateProfile)
 			usersGroup.PUT("/email", middlewares.AuthJWT(), usersController.UpdateEmail)
+			usersGroup.PUT("/phone", middlewares.AuthJWT(), usersController.UpdatePhone)
+			usersGroup.PUT("/password", middlewares.AuthJWT(), usersController.UpdatePassword)
 		}
 
 		// 分类

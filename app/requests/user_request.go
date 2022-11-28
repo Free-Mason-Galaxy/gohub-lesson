@@ -91,3 +91,82 @@ func ValidateUserUpdateEmail(ctx *gin.Context) (data UserUpdateEmailRequest, err
 
 	return
 }
+
+type UserUpdatePhoneRequest struct {
+	Phone      string `json:"phone,omitempty" valid:"phone"`
+	VerifyCode string `json:"verify_code,omitempty" valid:"verify_code"`
+}
+
+func ValidateUserUpdatePhone(ctx *gin.Context) (data UserUpdatePhoneRequest, errs MapErrs) {
+
+	ShouldBindJSON(&data, ctx)
+
+	currentUser := auth.CurrentUser(ctx)
+
+	rules := govalidator.MapData{
+		"phone": []string{
+			"required",
+			"digits:11",
+			"not_exists:users,phone," + currentUser.GetIdString(),
+			"not_in:" + currentUser.Phone,
+		},
+		"verify_code": []string{"required", "digits:6"},
+	}
+
+	messages := govalidator.MapData{
+		"phone": []string{
+			"required:手机号为必填项，参数名称 phone",
+			"digits:手机号长度必须为 11 位的数字",
+			"not_exists:手机号已被占用",
+			"not_in:新的手机与老手机号一致",
+		},
+		"verify_code": []string{
+			"required:验证码答案必填",
+			"digits:验证码长度必须为 6 位的数字",
+		},
+	}
+
+	errs = validate(&data, rules, messages)
+
+	ValidateVerifyCode(data.Phone, data.VerifyCode, errs)
+
+	return
+}
+
+type UserUpdatePasswordRequest struct {
+	Password           string `valid:"password" json:"password,omitempty"`
+	NewPassword        string `valid:"new_password" json:"new_password,omitempty"`
+	NewPasswordConfirm string `valid:"new_password_confirm" json:"new_password_confirm,omitempty"`
+}
+
+func ValidateUserUpdatePassword(ctx *gin.Context) (data UserUpdatePasswordRequest, errs MapErrs) {
+	ShouldBindJSON(&data, ctx)
+
+	rules := govalidator.MapData{
+		"password":             []string{"required", "min:6"},
+		"new_password":         []string{"required", "min:6"},
+		"new_password_confirm": []string{"required", "min:6"},
+	}
+
+	messages := govalidator.MapData{
+		"password": []string{
+			"required:密码为必填项",
+			"min:密码长度需大于 6",
+		},
+		"new_password": []string{
+			"required:密码为必填项",
+			"min:密码长度需大于 6",
+		},
+		"new_password_confirm": []string{
+			"required:确认密码框为必填项",
+			"min:确认密码长度需大于 6",
+		},
+	}
+
+	// 确保 comfirm 密码正确
+	errs = validate(&data, rules, messages)
+
+	ValidatePasswordConfirm(data.NewPassword, data.NewPasswordConfirm, errs)
+
+	return
+}

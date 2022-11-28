@@ -19,6 +19,50 @@ func (class *UsersController) CurrentUser(ctx *gin.Context) {
 	response.Data(ctx, users)
 }
 
+func (class *UsersController) UpdatePassword(ctx *gin.Context) {
+
+	data, errs := requests.ValidateUserUpdatePassword(ctx)
+	if errs.ErrsAbortWithStatusJSON(ctx) {
+		return
+	}
+
+	currentUser := auth.CurrentUser(ctx)
+
+	// 验证原始密码是否正确
+	_, err := auth.Attempt(currentUser.Name, data.Password)
+
+	if err != nil {
+		// 失败，显示错误提示
+		response.Unauthorized(ctx, "原密码不正确")
+		return
+	}
+
+	// 更新密码为新密码
+	currentUser.Password = data.NewPassword
+	currentUser.Save()
+
+	response.Success(ctx)
+}
+
+func (class *UsersController) UpdatePhone(ctx *gin.Context) {
+
+	data, errs := requests.ValidateUserUpdatePhone(ctx)
+	if errs.ErrsAbortWithStatusJSON(ctx) {
+		return
+	}
+
+	currentUser := auth.CurrentUser(ctx)
+	currentUser.Phone = data.Phone
+	rowsAffected := currentUser.Save()
+
+	if rowsAffected.ToBool() {
+		response.Success(ctx)
+		return
+	}
+
+	response.Abort500(ctx, "更新失败，请稍后尝试~")
+}
+
 func (class *UsersController) UpdateEmail(ctx *gin.Context) {
 
 	data, errs := requests.ValidateUserUpdateEmail(ctx)
