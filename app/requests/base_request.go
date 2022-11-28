@@ -146,3 +146,18 @@ func ValidateVerifyCode(key, answer string, errs MapErrs) MapErrs {
 
 	return errs
 }
+
+func validateFile(ctx *gin.Context, data any, rules govalidator.MapData, messages govalidator.MapData) (errs MapErrs) {
+	opts := govalidator.Options{
+		Request:       ctx.Request,
+		Data:          data,
+		Rules:         rules,
+		Messages:      messages,
+		TagIdentifier: "valid",
+	}
+
+	// 调用 govalidator 的 Validate 方法来验证文件
+	errs.Values = govalidator.New(opts).Validate()
+
+	return
+}

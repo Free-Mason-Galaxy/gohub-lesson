@@ -4,6 +4,8 @@ import (
 	"gohub-lesson/app/models/user"
 	"gohub-lesson/app/requests"
 	"gohub-lesson/pkg/auth"
+	"gohub-lesson/pkg/config"
+	"gohub-lesson/pkg/file"
 	"gohub-lesson/pkg/response"
 
 	"github.com/gin-gonic/gin"
@@ -17,6 +19,26 @@ type UsersController struct {
 func (class *UsersController) CurrentUser(ctx *gin.Context) {
 	users := auth.CurrentUser(ctx)
 	response.Data(ctx, users)
+}
+
+func (class *UsersController) UpdateAvatar(ctx *gin.Context) {
+
+	data, errs := requests.ValidateUserUpdateAvatar(ctx)
+	if errs.ErrsAbortWithStatusJSON(ctx) {
+		return
+	}
+
+	avatar, err := file.SaveUploadAvatar(ctx, data.Avatar)
+	if err != nil {
+		response.Abort500(ctx, "上传头像失败，请稍后尝试~")
+		return
+	}
+
+	currentUser := auth.CurrentUser(ctx)
+	currentUser.Avatar = config.GetString("app.url") + avatar
+	currentUser.Save()
+
+	response.Data(ctx, currentUser)
 }
 
 func (class *UsersController) UpdatePassword(ctx *gin.Context) {
