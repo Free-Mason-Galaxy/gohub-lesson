@@ -115,8 +115,10 @@ func NewRootCmd() *cobra.Command {
 
 // registerStatsviz 实时可视化Go Runtime指标
 func registerStatsviz() {
-	statsviz.RegisterDefault()
-	go http.ListenAndServe("localhost:62", nil)
+	_ = statsviz.RegisterDefault()
+	go func() {
+		_ = http.ListenAndServe("localhost:62", nil)
+	}()
 }
 
 func getEnvFlag() (env string) {

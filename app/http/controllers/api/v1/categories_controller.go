@@ -13,6 +13,12 @@ type CategoriesController struct {
 	BaseController
 }
 
+//
+// Index
+//  @Description:
+//  @receiver class
+//  @param ctx
+//
 func (class *CategoriesController) Index(ctx *gin.Context) {
 
 	params, errs := requests.ValidatePagination(ctx)

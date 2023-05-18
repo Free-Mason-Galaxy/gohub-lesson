@@ -20,6 +20,7 @@ var SQLDB *sql.DB
 func Connect(config gorm.Dialector, logger gormLogger.Interface) {
 
 	var err error
+
 	// 连接数据库
 	DB, err = gorm.Open(config, &gorm.Config{
 		Logger: logger,
@@ -31,6 +32,7 @@ func Connect(config gorm.Dialector, logger gormLogger.Interface) {
 
 	// 获取底层SQL
 	SQLDB, err = DB.DB()
+
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -47,7 +49,7 @@ func DeleteAllTables() error {
 	case "mysql":
 		err = deleteMySQLTables()
 	case "sqlite":
-		deleteAllSqliteTables()
+		err = deleteAllSqliteTables()
 	default:
 		panic(errors.New("database connection not supported"))
 	}
@@ -110,8 +112,9 @@ func deleteMySQLTables() (err error) {
 	return nil
 }
 
-func TableName(obj interface{}) string {
+func TableName(obj any) string {
 	stmt := &gorm.Statement{DB: DB}
 	stmt.Parse(obj)
+
 	return stmt.Schema.Table
 }

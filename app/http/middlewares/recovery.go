@@ -15,6 +15,7 @@ import (
 	"go.uber.org/zap"
 	"gohub-lesson/pkg/logger"
 	"gohub-lesson/pkg/response"
+	"gorm.io/gorm"
 )
 
 // Recovery 使用 zap.Error() 来记录 panic 和 call stack
@@ -23,6 +24,12 @@ func Recovery() gin.HandlerFunc {
 		defer func() {
 			err := recover()
 			if err != nil {
+				tx, _ := ctx.Get("transaction")
+
+				if tx != nil {
+					tx.(*gorm.DB).Rollback()
+				}
+
 				// 获取用户的请求信息
 				httpRequest, _ := httputil.DumpRequest(ctx.Request, true)
 
@@ -36,6 +43,7 @@ func Recovery() gin.HandlerFunc {
 						}
 					}
 				}
+
 				// 链接中断的情况
 				if brokenPipe {
 					logger.Error(ctx.Request.URL.Path,

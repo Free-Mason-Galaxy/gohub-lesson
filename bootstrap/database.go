@@ -39,8 +39,8 @@ func SetupDB() {
 		})
 	case "sqlite":
 		// 初始化 sqlite
-		database := config.Get("database.sqlite.database")
-		dbConfig = sqlite.Open(database)
+		dbase := config.Get("database.sqlite.database")
+		dbConfig = sqlite.Open(dbase)
 	default:
 		panic(errors.New("database connection not supported"))
 
@@ -54,7 +54,7 @@ func SetupDB() {
 
 	database.SQLDB.SetConnMaxLifetime(time.Duration(config.GetInt("database.mysql.max_life_seconds")) * time.Second)
 
-	AutoMigrate()
+	// AutoMigrate()
 
 }
 

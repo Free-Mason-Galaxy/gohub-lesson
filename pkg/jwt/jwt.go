@@ -169,7 +169,7 @@ func (class *JWT) createToken(claims JWTCustomClaims) (string, error) {
 // expireAtTime 过期时间
 func (class *JWT) expireAtTime() int64 {
 
-	timenow := app.TimeNowInTimezone()
+	timeNow := app.TimeNowInTimezone()
 
 	var expireTime int64
 
@@ -181,7 +181,7 @@ func (class *JWT) expireAtTime() int64 {
 
 	expire := time.Duration(expireTime) * time.Minute
 
-	return timenow.Add(expire).Unix()
+	return timeNow.Add(expire).Unix()
 }
 
 // parseTokenString 使用 golangJwt.ParseWithClaims 解析 Token
